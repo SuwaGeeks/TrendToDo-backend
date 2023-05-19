@@ -23,7 +23,7 @@
       "file": {
           "class": "logging.handlers.TimedRotatingFileHandler",
           "formatter": "default",
-          "filename": "./api/logs/application.log"
+          "filename": "./logs/application.log"
       },
       "wsgi": {
           "class": "logging.StreamHandler",

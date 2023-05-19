@@ -1,17 +1,17 @@
 from flask import Flask
 from flask_cors import CORS
 import router
-# from config import config
-# import db
+from config import config
+import db
 
 def create_app():
   # Generate Flask App Instance
   app = Flask(__name__)
 
   # Read DB setting & Initialize
-  # app.config.from_object(config.Config)
-  # db.init_db(app)
-  # db.init_ma(app)
+  app.config.from_object(config.Config)
+  db.init_db(app)
+  db.init_ma(app)
 
   # Register Router Instance
   app.register_blueprint(router.router)
