@@ -3,6 +3,7 @@ from model.groups import Group, GroupSchema
 from model.group_users import GroupUser, GroupUserSchema
 from model.group_tasks import GroupTasks, GroupTasksSchema
 from model.group_task_logs import GroupTaskLog, GroupTaskLogSchema
+from model.users import User, UserSchema
 
 #ユーザIDで指定したユーザが所属しているグループのすべてのタスクを取得
 def get_all_group_task_by_userId_logic(userId):
@@ -17,6 +18,10 @@ def create_group_response_model(group):
     group_user_schema = GroupUserSchema(many=True)
     groupUsers = GroupUser.get_all_user_by_group_id(groupId)
     groupUsers = group_user_schema.dump(groupUsers)
+
+    user_schema = UserSchema(many=True)
+    groupUsers = User.get_user_list_from_group_user(groupUsers)
+    groupUsers = user_schema.dump(groupUsers)
     group['groupUsers'] = groupUsers
 
     group_task_schema = GroupTasksSchema(many=True)
