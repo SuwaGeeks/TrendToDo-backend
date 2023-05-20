@@ -11,12 +11,9 @@ class User(db.Model):
     updated_at = db.Column(Timestamp, server_default=current_timestamp(), nullable=False)
 
     # Contructor
-    def __init__(self, userId, userName, password, created_at, updated_at):
-        self.userId = userId
+    def __init__(self, userName, password):
         self.userName = userName
         self.password = password
-        self.created_at = created_at
-        self.updated_at = updated_at
 
     def __repr__(self):
          return '<User %r>' % self.userName
@@ -30,29 +27,44 @@ class User(db.Model):
         else:
             return user_list
 
-    # ユーザの情報を変更する
-    def change_user(user):
-        tagetUser = db.session.query(User) \
-            .filter(User.userId == user["userId"]).one()
-        tagetUser.userName = user["taskName"],
-        tagetUser.password = user["taskContent"],
+    # ユーザ名を変更する
+    def change_user_name(userName, userId):
+        targetUser = db.session.query(User) \
+            .filter(User.userId == userId).one()
+        targetUser.userName = userName
         db.session.commit()
-        return user
+        return targetUser
+    
+    # パスワードを変更する
+    def change_user_password(password, userId):
+        targetUser = db.session.query(User) \
+            .filter(User.userId == userId).one()
+        targetUser.password = password
+        db.session.commit()
+        return targetUser
 
     # 新しいユーザを追加する
     def create_user(user):
         record = User(
-            name = user['name'],
+            userName = user['userName'],
+            password = user['password'],
         )
         # INSERT INTO users(name) VALUES(...)
         db.session.add(record)
         db.session.commit()
-        return user
+        return record
     
     def get_user_by_id(id):
         return db.session.query(User)\
             .filter(User.id == id)\
             .one()
+    
+    # パスワードとユーザ名とIDでユーザ認証をする
+    def check_user(user):
+        return db.session.query(User) \
+            .filter(User.userId == user['userId']) \
+            .filter(User.userName == user['userName']) \
+            .filter(User.password == user['password']).all()
 
 # Difinition of User Schema with Marshmallow
 # refer: https://flask-marshmallow.readthedocs.io/en/latest/

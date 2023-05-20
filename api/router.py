@@ -1,5 +1,7 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from controller import user_controller
+from controller import personal_task_controller
+from controller import group_task_controller
 from logging import config
 from json import load
 import auth
@@ -26,21 +28,21 @@ def hello_world():
 @logger.http_request_logging
 @auth.requires_auth
 def post_user():
-  return "[POST] /api/user"
+  return user_controller.create_new_user(request.form.to_dict())
 
 # ユーザデータの更新
 @router.route("/api/users/<userId>", methods=['PATCH'])
 @logger.http_request_logging
 @auth.requires_auth
 def patch_users_by_userId(userId):
-  return userId
+  return user_controller.update_user_info(request.form.to_dict(), int(userId))
 
 # ログイン用のエンドポイント
 @router.route("/api/login", methods=['POST'])
 @logger.http_request_logging
 @auth.requires_auth
 def post_login():
-  return "[POST] /login"
+  return user_controller.login_user(request.form.to_dict())
 
 
 ##################################
