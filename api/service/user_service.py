@@ -1,5 +1,8 @@
 from flask import make_response, jsonify
 from model.users import User, UserSchema
+from model.group_users import GroupUser, GroupUserSchema
+from model.groups import Group, GroupSchema
+from service.group_task_service import create_group_response_model
 import hashlib
 
 def get_user_logic():
@@ -50,4 +53,13 @@ def user_login_rogic(req):
         return make_response(jsonify({
             'code': 406,
             'msg': 'ログインに失敗しました'
-        }))
+        }))# 新しいグループに参加する処理
+# 新しいグループに参加する処理
+def join_new_group_logic(req, userId):
+    GroupUser.user_join_group(req['groupId'], userId)
+
+    responseGroup = Group.get_group_info_by_groupId(req['groupId'])
+    return make_response(jsonify({
+        "code": 200,
+        "group": create_group_response_model(responseGroup),
+    }))

@@ -45,6 +45,13 @@ def patch_users_by_userId(userId):
 def post_login():
   return user_controller.login_user(request.json)
 
+# 新しいグループに参加するAPI
+@router.route("/api/user/<userId>/group", methods=['POST'])
+@logger.http_request_logging
+@auth.requires_auth
+def post_user_group(userId):
+  return user_controller.post_user_group(request.json, userId)
+
 
 ##################################
 # UserTask : 個人タスクに関わるAPI
