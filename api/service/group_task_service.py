@@ -10,6 +10,8 @@ def get_all_group_task_by_userId_logic(userId):
 
 # グループのレスポンスモデルを作成する関数
 def create_group_response_model(group):
+    group_schema = GroupSchema()
+    group = group_schema.dump(group)
     groupId = group["groupId"]
 
     group_user_schema = GroupUserSchema(many=True)
@@ -26,9 +28,7 @@ def create_group_response_model(group):
 
 # 新しいグループを作成する
 def create_new_group(req):
-    group_schema = GroupSchema()
     newGroup = Group.create_group(req)
-    newGroup = group_schema.dump(newGroup)
 
     return make_response(jsonify({
         "code": 200,
@@ -37,9 +37,7 @@ def create_new_group(req):
 
 # グループの情報を取得
 def get_group_info_logic(groupId):
-    group_schema = GroupSchema()
     group = Group.get_group_info_by_groupId(groupId)
-    group = group_schema.dump(group)
 
     return make_response(jsonify({
         "code": 200,
