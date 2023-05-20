@@ -6,8 +6,8 @@ from sqlalchemy.sql.functions import current_timestamp
 class GroupUser(db.Model):
     __tablename__ = 'group_users'
     refId = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    userId =  db.Column(db.Intege, nullable=False)
-    groupId =  db.Column(db.Intege, nullable=False)
+    userId =  db.Column(db.Integer, nullable=False)
+    groupId =  db.Column(db.Integer, nullable=False)
     created_at = db.Column(Timestamp, server_default=current_timestamp(), nullable=False)
 
     # Contructor

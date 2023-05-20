@@ -1,9 +1,39 @@
 from flask import make_response, jsonify
+from model.groups import Group, GroupSchema
+from model.group_users import GroupUser, GroupUserSchema
 from model.group_tasks import GroupTasks, GroupTasksSchema
 from model.group_task_logs import GroupTaskLog, GroupTaskLogSchema
+
 #ユーザIDで指定したユーザが所属しているグループのすべてのタスクを取得
 def get_all_group_task_by_userId_logic(userId):
     return
+
+# グループのレスポンスモデルを作成する関数
+def create_group_response_model(group):
+    groupId = group["groupId"]
+
+    group_user_schema = GroupUserSchema(many=True)
+    groupUsers = GroupUser.get_all_user_by_group_id(groupId)
+    groupUsers = group_user_schema.dump(groupUsers)
+    group['groupUsers'] = groupUsers
+
+    group_task_schema = GroupTasksSchema(many=True)
+    groupTasks = GroupTasks.get_group_tasks_by_group_id(groupId)
+    groupTasks = group_task_schema.dump(groupTasks)
+    group['groupTasks'] = groupTasks
+
+    return group
+
+# 新しいグループを作成する
+def create_new_group(req):
+    group_schema = GroupSchema()
+    newGroup = Group.create_group(req)
+    newGroup = group_schema.dump(newGroup)
+
+    return make_response(jsonify({
+        "code": 200,
+        "createdGroup": create_group_response_model(newGroup),
+    }))
 
 
 #グループIDで指定したグループのタスク一覧を取得

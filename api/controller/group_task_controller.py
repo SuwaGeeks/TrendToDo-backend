@@ -4,6 +4,10 @@ from service.group_task_service import *
 def get_all_group_task_by_userId(userId):
     return get_all_group_task_by_userId_logic(userId)
 
+# 新しいグループを作成する
+def post_new_group(reqBody):
+    return create_new_group(reqBody)
+
 #グループIDで指定したグループのタスク一覧を取得
 def get_group_task_list_by_groupId(groupId):
     return get_group_task_list_by_groupId_logic(groupId)

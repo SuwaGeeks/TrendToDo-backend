@@ -10,11 +10,8 @@ class Group(db.Model):
     updated_at = db.Column(Timestamp, server_default=current_timestamp(), nullable=False)
 
     # Contructor
-    def __init__(self, groupId, groupName, created_at, updated_at):
-        self.groupId = groupId
+    def __init__(self, groupName):
         self.groupName = groupName
-        self.created_at = created_at
-        self.updated_at = updated_at
 
     def __repr__(self):
          return '<Group %r>' % self.groupName
@@ -27,19 +24,19 @@ class Group(db.Model):
         else:
             return group_list
 
-    def get_user_by_id(id):
+    def get_user_by_groupId(groupId):
         return db.session.query(Group)\
-            .filter(Group.groupId == id)\
+            .filter(Group.groupId == groupId)\
             .one()
 
     def create_group(group):
         record = Group(
-            groupName = group['name'],
+            groupName = group['groupName'],
         )
         # INSERT INTO group(groupName) VALUES(...)
         db.session.add(record)
         db.session.commit()
-        return group
+        return record
 
 # Difinition of User Schema with Marshmallow
 # refer: https://flask-marshmallow.readthedocs.io/en/latest/

@@ -87,13 +87,19 @@ def delete_personl_task_by_taskId(userId, taskId):
 ##################################
 # GroupTask : グループタスクに関わるAPI
 ##################################
-
 # ユーザIDで指定したユーザが所属しているグループの全てのタスクを取得
 @router.route("/api/user/<userId>/tasks/group", methods=['GET'])#group_tasks.pyに存在しない
 @logger.http_request_logging
 @auth.requires_auth
 def get_group_task_by_userId(userId):
   return group_task_controller.get_all_group_task_by_userId(userId)
+
+# 新しいグループを作成するAPI
+@router.route("/api/group", methods=['POST'])#group_tasks.pyに存在しない
+@logger.http_request_logging
+@auth.requires_auth
+def post_new_group():
+  return group_task_controller.post_new_group(request.json)
 
 # グループIDで指定したグループのタスク一覧を取得
 @router.route("/api/group/<groupId>/tasks",methods=['GET'])
