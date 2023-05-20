@@ -6,16 +6,13 @@ from sqlalchemy.sql.functions import current_timestamp
 class PersonalTaskLog(db.Model):
     __tablename__ = 'personal_task_logs'
     refId = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    taskId = db.Column(db.Integer, nullable=False)
-    hostUserId = db.Column(db.Intege, nullable=False)
+    taskId = db.Column(db.Integer, db.ForeignKey("personal_tasks.taskId"))
+    hostUserId = db.relationship("PersonalTask", backref="personal_task_logs")
     finishedAt = db.Column(Timestamp, server_default=current_timestamp(), nullable=False)
 
     # Contructor
-    def __init__(self, refId, taskId, hostUserId, finishedAt):
-        self.refId = refId
+    def __init__(self, taskId):
         self.taskId = taskId
-        self.hostUserId = hostUserId
-        self.finishedAt = finishedAt
 
     def __repr__(self):
         return '<PersonalTaskLogs %r>' % self.taskId
@@ -30,14 +27,13 @@ class PersonalTaskLog(db.Model):
             return personal_task_log_list
         
     # 個人タスクのログを新たに追加する
-    def add_personal_task_log(personal_task):
+    def add_personal_task_log(taskId):
         record = PersonalTaskLog(
-            taskId=personal_task["taskId"],
-            hostUserId=personal_task["userId"],
+            taskId=taskId,
         )
         db.session.add(record)
         db.session.commit()
-        return personal_task
+        return record
 
     # 個人タスクのログを、タスクのIDで取得する
     def get_personal_task_log_by_task_id(task_id):
@@ -55,3 +51,4 @@ class PersonalTaskLog(db.Model):
 class PersonalTaskLogSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
       model = PersonalTaskLog
+      include_fk = True

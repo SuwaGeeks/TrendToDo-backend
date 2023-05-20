@@ -6,22 +6,19 @@ from sqlalchemy.sql.functions import current_timestamp
 class PersonalTask(db.Model):
     __tablename__ = 'personal_tasks'
     taskId = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    hostUserId = db.Column(db.Intege, nullable=False)
+    hostUserId = db.Column(db.Integer, nullable=False)
     taskName = db.Column(db.String(225), nullable=False)
     taskContent = db.Column(db.String(225), nullable=False)
-    taskLimit = db.Column(db.Datatime, nullable=False)
+    taskLimit = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(Timestamp, server_default=current_timestamp(), nullable=False)
     updated_at = db.Column(Timestamp, server_default=current_timestamp(), nullable=False)
 
     # Contructor
-    def __init__(self, taskId, hostUserId, taskName, taskContent, taskLimit, created_at, updated_at):
-        self.taskId = taskId
+    def __init__(self, hostUserId, taskName, taskContent, taskLimit):
         self.hostUserId = hostUserId
         self.taskName = taskName
         self.taskContent = taskContent
         self.taskLimit = taskLimit
-        self.created_at = created_at
-        self.updated_at = updated_at
 
     def __repr__(self):
         return '<PersonalTasks %r>' % self.taskName
@@ -44,7 +41,7 @@ class PersonalTask(db.Model):
     #ユーザIDで指定したタスクの情報を取得
     def get_personal_task_by_user_id(user_id):
         return db.session.query(PersonalTask) \
-            .filter(PersonalTask.hostUserId == user_id)
+            .filter(PersonalTask.hostUserId == user_id).all()
 
     #新しい個人タスクの追加
     def add_personal_task(personal_task):
