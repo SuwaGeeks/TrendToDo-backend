@@ -28,7 +28,7 @@ class GroupTasks(db.Model):
     # グループユーザの配列から、そのユーザが所属しているグループの全てのタスクを取得
     def get_group_tasks_by_group_user(group_users):
         groupIds = [and_(
-            GroupTasks.groupId == g['groupId'],
+            GroupTasks.taskGroupId == g['groupId'],
         ) for g in group_users]
         return db.session.query(GroupTasks) \
             .filter(or_(*groupIds)).all()
