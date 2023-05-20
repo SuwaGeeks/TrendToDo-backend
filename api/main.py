@@ -19,6 +19,7 @@ def create_app():
   # Additional Configuration 
   app.config['JSON_AS_ASCII'] = False #日本語文字化け対策
   app.config["JSON_SORT_KEYS"] = False #ソートをそのまま
+  app.config["JSONIFY_MIMETYPE"] = "application/json; charset=utf-8"
   CORS(
     app,
     resources = {
