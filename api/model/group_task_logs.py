@@ -6,7 +6,7 @@ class GroupTaskLog(db.Model):
     __tablename__ = 'group_task_logs'
     refId = db.Column(db.Integer, autoincrement=True, primary_key=True)
     taskId = db.Column(db.Integer, nullable=False)
-    taskGroupId = db.Column(db.Intege, nullable=False)
+    taskGroupId = db.Column(db.Integer, nullable=False)
     finishedAt = db.Column(Timestamp, server_default=current_timestamp(), nullable=False)
 
     # Contructor
@@ -27,10 +27,10 @@ class GroupTaskLog(db.Model):
         else:
             return group_task_log_list
         
-    def add_group_task_log(task_id, task_group_id):
+    def add_group_task_log(task_id):
         record = GroupTaskLog(
             taskId=task_id,
-            taskGroupId=task_group_id,
+            #taskGroupId=task_group_id,
         )
         db.session.add(record)
         db.session.commit()

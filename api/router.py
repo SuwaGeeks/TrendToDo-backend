@@ -86,49 +86,48 @@ def delete_personl_task_by_taskId(userId, taskId):
 ##################################
 # GroupTask : グループタスクに関わるAPI
 ##################################
+
 # ユーザIDで指定したユーザが所属しているグループの全てのタスクを取得
-@router.route("/api/user/<userId>/tasks/group", methods=['GET'])
+@router.route("/api/user/<userId>/tasks/group", methods=['GET'])#group_tasks.pyに存在しない
 @logger.http_request_logging
 @auth.requires_auth
 def get_group_task_by_userId(userId):
-  return "/api/user/<userId>/tasks/user"
+  return group_task_controller.get_all_group_task_by_userId(userId)
 
 # グループIDで指定したグループのタスク一覧を取得
 @router.route("/api/group/<groupId>/tasks",methods=['GET'])
 @logger.http_request_logging
 @auth.requires_auth
 def get_group_task_by_groupId(groupId):
-  return "/api/group/<groupId>/tasks"
+  return group_task_controller.get_group_task_list_by_groupId(groupId)
 
 # グループIDで指定したグループに新しいタスクを追加
 @router.route("/api/group/<groupId>/tasks",methods=['POST'])
 @logger.http_request_logging
 @auth.requires_auth
 def post_group_task(groupId):
-  return "[POST] /api/group/<groupId>/tasks"
-
-
+  return group_task_controller.post_group_task(request.form.to_dict())
 
 #指定したグループの指定したタスクの情報を取得
 @router.route("/api/group/<groupId>/tasks/<taskId>",methods=['GET'])
 @logger.http_request_logging
 @auth.requires_auth
 def get_group_task_by_taskId(groupId, taskId):
-  return "/api/group/<groupId>/tasks"
+  return group_task_controller.get_group_task_info_by_taskId(taskId)
 
 #指定したグループの指定したタスクの内容を変更
 @router.route("/api/group/<groupId>/tasks<taskId>",methods=['PUT'])
 @logger.http_request_logging
 @auth.requires_auth
 def put_group_task_by_taskId(groupId, taskId):
-  return "/api/group/<groupId>/tasks"
+  return group_task_controller.put_group_task_info(request.form.to_dict(), taskId)
   
 #指定したグループの指定したタスクを削除
 @router.route("/api/group/<groupId>/tasks/<taskId>",methods=['DELETE'])
 @logger.http_request_logging
 @auth.requires_auth
 def delete_group_task_by_taskId(groupId, taskId):
-  return "/api/group/<groupId>/tasks"
+  return group_task_controller.delete_group_task(taskId)
 
 
 ##################################
@@ -142,11 +141,11 @@ def post_submit_personal_task(taskId):
   return personal_task_controller.submit_personal_task(taskId)
 
 #グループタスクを消化する
-@router.route("/api/submit/group/<taskID>",methods=['POST'])
+@router.route("/api/submit/group/<taskId>",methods=['POST'])
 @logger.http_request_logging
 @auth.requires_auth
-def post_submit_group_task(taskID):
-  return "/api/submit/group/<taskID>"
+def post_submit_group_task(taskId):
+  return group_task_controller.submit_group_task(taskId)
 
 
 
