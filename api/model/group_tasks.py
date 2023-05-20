@@ -1,6 +1,7 @@
 from db import db, ma
 from sqlalchemy.dialects.mysql import TIMESTAMP as Timestamp
 from sqlalchemy.sql.functions import current_timestamp
+from sqlalchemy import and_, or_
 
 class GroupTasks(db.Model):
     __tablename__ = 'group_tasks'
@@ -13,7 +14,7 @@ class GroupTasks(db.Model):
     meanTime = db.Column(db.Integer, nullable=False)
 
     # Contructor
-    def __init__(self, taskId, taskGroupId, taskName, taskContent, taskLimit, taskWeight=0, meanTime=0):
+    def __init__(self, taskGroupId, taskName, taskContent, taskLimit, taskWeight=0, meanTime=0):
         self.taskGroupId = taskGroupId
         self.taskName = taskName
         self.taskContent = taskContent
@@ -24,7 +25,13 @@ class GroupTasks(db.Model):
     def __repr__(self):
         return '<GroupTask %r>' % self.taskName
     
-    #ユーザIDで指定したユーザが所属しているグループのすべてのタスクを取得
+    # グループユーザの配列から、そのユーザが所属しているグループの全てのタスクを取得
+    def get_group_tasks_by_group_user(group_users):
+        groupIds = [and_(
+            GroupTasks.groupId == g['groupId'],
+        ) for g in group_users]
+        return db.session.query(GroupTasks) \
+            .filter(or_(*groupIds)).all()
 
     #グループIDで指定したグループのタスク一覧を取得
     def get_group_tasks_by_group_id(group_id):

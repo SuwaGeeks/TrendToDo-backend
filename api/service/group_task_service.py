@@ -7,7 +7,17 @@ from model.users import User, UserSchema
 
 #ユーザIDで指定したユーザが所属しているグループのすべてのタスクを取得
 def get_all_group_task_by_userId_logic(userId):
-    return
+    # 所属しているすべてグループを取得
+    group_users = GroupUser.get_all_group_by_user_id(userId)
+    group_user_schema = GroupUserSchema(many=True)
+    group_users = group_user_schema.dump(group_users)
+
+    group_tasks = GroupTasks.get_group_tasks_by_group_user(group_users)
+    group_tasks_schema = GroupTasksSchema(many=True)
+    return make_response(jsonify({
+        "code": 200,
+        "group": group_tasks_schema.dump(group_tasks),
+    }))
 
 # グループのレスポンスモデルを作成する関数
 def create_group_response_model(group):
