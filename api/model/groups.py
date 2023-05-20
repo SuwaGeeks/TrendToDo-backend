@@ -1,6 +1,7 @@
 from db import db, ma
 from sqlalchemy.dialects.mysql import TIMESTAMP as Timestamp
 from sqlalchemy.sql.functions import current_timestamp
+from sqlalchemy import and_, or_
 
 class Group(db.Model):
     __tablename__ = 'groups'
@@ -43,6 +44,14 @@ class Group(db.Model):
         db.session.add(record)
         db.session.commit()
         return record
+    
+    # グループユーザの情報から全てのグループを取得する
+    def get_groupList_from_group_user(group_users):
+        groupIds = [and_(
+            Group.groupId == g['groupId'],
+        ) for g in group_users]
+        return db.session.query(Group) \
+            .filter(or_(*groupIds)).all()
 
 # Difinition of User Schema with Marshmallow
 # refer: https://flask-marshmallow.readthedocs.io/en/latest/

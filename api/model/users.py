@@ -1,6 +1,7 @@
 from db import db, ma
 from sqlalchemy.dialects.mysql import TIMESTAMP as Timestamp
 from sqlalchemy.sql.functions import current_timestamp
+from sqlalchemy import and_, or_
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -65,6 +66,14 @@ class User(db.Model):
             .filter(User.userId == user['userId']) \
             .filter(User.userName == user['userName']) \
             .filter(User.password == user['password']).all()
+    
+    # グループユーザの配列からユーザ情報を取得する
+    def get_user_list_from_group_user(group_users):
+        groupIds = [and_(
+            User.userId == g['userId'],
+        ) for g in group_users]
+        return db.session.query(User) \
+            .filter(or_(*groupIds)).all()
 
 # Difinition of User Schema with Marshmallow
 # refer: https://flask-marshmallow.readthedocs.io/en/latest/

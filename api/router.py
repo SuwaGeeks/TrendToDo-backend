@@ -45,6 +45,20 @@ def patch_users_by_userId(userId):
 def post_login():
   return user_controller.login_user(request.json)
 
+# ユーザの参加しているグループの一覧を取得するAPI
+@router.route("/api/user/<userId>/group", methods=['GET'])
+@logger.http_request_logging
+@auth.requires_auth
+def get_user_group_by_userId(userId):
+  return user_controller.get_user_group_by_userId(userId)
+
+# 新しいグループに参加するAPI
+@router.route("/api/user/<userId>/group", methods=['POST'])
+@logger.http_request_logging
+@auth.requires_auth
+def post_user_group(userId):
+  return user_controller.post_user_group(request.json, userId)
+
 
 ##################################
 # UserTask : 個人タスクに関わるAPI
@@ -163,8 +177,10 @@ def post_submit_group_task(taskId):
   return group_task_controller.submit_group_task(taskId)
 
 
-
-@router.route("/api/v1/users/getUserList", methods=['GET'])
+##################################
+# Admin : 管理用のAPI
+##################################
+@router.route("/api/getUserList", methods=['GET'])
 @logger.http_request_logging
 @auth.requires_auth
 def api_v1_users_get_user_list():

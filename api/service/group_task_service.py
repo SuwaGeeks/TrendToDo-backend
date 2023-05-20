@@ -3,6 +3,7 @@ from model.groups import Group, GroupSchema
 from model.group_users import GroupUser, GroupUserSchema
 from model.group_tasks import GroupTasks, GroupTasksSchema
 from model.group_task_logs import GroupTaskLog, GroupTaskLogSchema
+from model.users import User, UserSchema
 
 #ユーザIDで指定したユーザが所属しているグループのすべてのタスクを取得
 def get_all_group_task_by_userId_logic(userId):
@@ -10,11 +11,17 @@ def get_all_group_task_by_userId_logic(userId):
 
 # グループのレスポンスモデルを作成する関数
 def create_group_response_model(group):
+    group_schema = GroupSchema()
+    group = group_schema.dump(group)
     groupId = group["groupId"]
 
     group_user_schema = GroupUserSchema(many=True)
     groupUsers = GroupUser.get_all_user_by_group_id(groupId)
     groupUsers = group_user_schema.dump(groupUsers)
+
+    user_schema = UserSchema(many=True)
+    groupUsers = User.get_user_list_from_group_user(groupUsers)
+    groupUsers = user_schema.dump(groupUsers)
     group['groupUsers'] = groupUsers
 
     group_task_schema = GroupTasksSchema(many=True)
@@ -26,9 +33,7 @@ def create_group_response_model(group):
 
 # 新しいグループを作成する
 def create_new_group(req):
-    group_schema = GroupSchema()
     newGroup = Group.create_group(req)
-    newGroup = group_schema.dump(newGroup)
 
     return make_response(jsonify({
         "code": 200,
@@ -37,9 +42,7 @@ def create_new_group(req):
 
 # グループの情報を取得
 def get_group_info_logic(groupId):
-    group_schema = GroupSchema()
     group = Group.get_group_info_by_groupId(groupId)
-    group = group_schema.dump(group)
 
     return make_response(jsonify({
         "code": 200,

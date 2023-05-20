@@ -11,11 +11,9 @@ class GroupUser(db.Model):
     created_at = db.Column(Timestamp, server_default=current_timestamp(), nullable=False)
 
     # Contructor
-    def __init__(self, refId, userId, groupId, created_at):
-        self.refId = refId
+    def __init__(self, userId, groupId):
         self.userId = userId
         self.groupId = groupId
-        self.created_at = created_at
 
     def __repr__(self):
         return '<GroupUser %r>' % self.refId
@@ -31,14 +29,14 @@ class GroupUser(db.Model):
             .filter(GroupUser.groupId == group_id).all()
 
     # ユーザが新しいグループに参加する
-    def user_join_group(user_join):
+    def user_join_group(groupId, userId):
         record = GroupUser(
-            userId=user_join["userId"],
-            groupId=user_join["groupId"]
+            userId=userId,
+            groupId=groupId,
         )
         db.session.add(record)
         db.session.commit()
-        return user_join
+        return record
 
     # ユーザがグループから退出する
     def user_exit_group(user_exit):
