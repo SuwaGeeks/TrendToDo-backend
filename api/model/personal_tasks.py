@@ -1,6 +1,8 @@
 from db import db, ma
 from sqlalchemy.dialects.mysql import TIMESTAMP as Timestamp
 from sqlalchemy.sql.functions import current_timestamp
+from model.personal_task_logs import PersonalTaskLog, PersonalTaskLogSchema
+from flask_marshmallow import fields
 
 # 個人タスク
 class PersonalTask(db.Model):
@@ -75,3 +77,4 @@ class PersonalTask(db.Model):
 class PersonalTaskSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
       model = PersonalTask
+      include_fk = True

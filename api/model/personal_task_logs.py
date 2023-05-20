@@ -5,9 +5,8 @@ from sqlalchemy.sql.functions import current_timestamp
 # 個人タスクのログ
 class PersonalTaskLog(db.Model):
     __tablename__ = 'personal_task_logs'
-    refId = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    taskId = db.Column(db.Integer, db.ForeignKey("personal_tasks.taskId"))
-    hostUserId = db.relationship("PersonalTask", backref="personal_task_logs")
+    taskId = db.Column(db.Integer, nullable=False, primary_key=True)
+    hostUserId = db.Column(db.Integer, nullable=False)
     finishedAt = db.Column(Timestamp, server_default=current_timestamp(), nullable=False)
 
     # Contructor
@@ -27,7 +26,7 @@ class PersonalTaskLog(db.Model):
             return personal_task_log_list
         
     # 個人タスクのログを新たに追加する
-    def add_personal_task_log(taskId):
+    def add_personal_task_log(taskId, userId):
         record = PersonalTaskLog(
             taskId=taskId,
         )
@@ -39,7 +38,7 @@ class PersonalTaskLog(db.Model):
     def get_personal_task_log_by_task_id(task_id):
         return db.session.query(PersonalTaskLog) \
             .filter(PersonalTaskLog.taskId == task_id) \
-            .one()
+            .all()
 
     # 個人タスクのログをユーザIDで全て取得する
     def get_personal_task_log_by_user_id(user_id):
@@ -51,4 +50,3 @@ class PersonalTaskLog(db.Model):
 class PersonalTaskLogSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
       model = PersonalTaskLog
-      include_fk = True

@@ -9,7 +9,7 @@ def get_group_task_list_by_groupId(groupId):
     return get_group_task_list_by_groupId_logic(groupId)
 
 #グループIDで指定したグループに新しいタスクを追加
-def add_group_task(reqBody):
+def post_group_task(reqBody):
     return post_group_task_logic(reqBody)
 
 #指定したグループの指定したタスクの情報を取得

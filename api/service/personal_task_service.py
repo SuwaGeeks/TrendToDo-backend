@@ -7,10 +7,25 @@ from model.personal_task_logs import PersonalTaskLog, PersonalTaskLogSchema
 #個人タスクの一覧を取得
 def get_personal_task_logic(userId):
     personal_task_schema_list = PersonalTaskSchema(many=True)
+    personal_task_log_schema = PersonalTaskLogSchema(many=True)
+
     tasks = PersonalTask.get_personal_task_by_user_id(userId)
+    tasks = personal_task_schema_list.dump(tasks)
+
+    logs = PersonalTaskLog.get_personal_task_log_by_user_id(userId)
+    logs = personal_task_log_schema.dump(logs)
+
+    id2index = {}
+    for i in range(len(tasks)):
+        tasks[i]['finished_at'] = ''
+        id2index[tasks[i]['taskId']] = i
+
+    for log in logs:
+        tasks[id2index[log['taskId']]]['finished_at'] = log['finishedAt']
+
     return make_response(jsonify({
         'code': 200,
-        'userTasks': personal_task_schema_list.dump(tasks)
+        'userTasks': tasks
     }))
     
 #新しい個人タスクを追加
@@ -50,7 +65,9 @@ def delete_personal_task_logic(taskId):
 
 #個人タスクを消化する
 def submit_personal_task_logic(taskId):
-    newLog = PersonalTaskLog.add_personal_task_log(taskId)
+    targetTask = PersonalTask.get_personal_task_by_task_id(taskId)
+
+    newLog = PersonalTaskLog.add_personal_task_log(taskId, targetTask['hostUserId'])
     personal_task_log_schema = PersonalTaskLogSchema()
     return make_response(jsonify({
         'code': 200,
