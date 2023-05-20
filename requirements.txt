@@ -11,7 +11,9 @@ Jinja2==3.1.2
 MarkupSafe==2.1.2
 marshmallow==3.19.0
 marshmallow-sqlalchemy==0.29.0
+mysql-connector-python==8.0.33
 packaging==23.1
+protobuf==3.20.3
 PyMySQL==1.0.3
 python-dotenv==0.21.1
 six==1.16.0
