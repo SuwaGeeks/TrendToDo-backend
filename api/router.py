@@ -3,6 +3,7 @@ from controller import user_controller
 from controller import personal_task_controller
 from controller import group_task_controller
 from logging import config
+import json
 from json import load
 import auth
 import logger
@@ -28,21 +29,21 @@ def hello_world():
 @logger.http_request_logging
 @auth.requires_auth
 def post_user():
-  return user_controller.create_new_user(request.form.to_dict())
+  return user_controller.create_new_user(request.json)
 
 # ユーザデータの更新
 @router.route("/api/users/<userId>", methods=['PATCH'])
 @logger.http_request_logging
 @auth.requires_auth
 def patch_users_by_userId(userId):
-  return user_controller.update_user_info(request.form.to_dict(), int(userId))
+  return user_controller.update_user_info(request.json, int(userId))
 
 # ログイン用のエンドポイント
 @router.route("/api/login", methods=['POST'])
 @logger.http_request_logging
 @auth.requires_auth
 def post_login():
-  return user_controller.login_user(request.form.to_dict())
+  return user_controller.login_user(request.json)
 
 
 ##################################
@@ -60,7 +61,7 @@ def get_personal_tasks(userId):
 @logger.http_request_logging
 @auth.requires_auth
 def post_personal_task(userId):
-  return personal_task_controller.post_personal_task(request.form.to_dict(), userId)
+  return personal_task_controller.post_personal_task(request.json, userId)
 
 # タスクIDで指定したタスクの情報を取得
 @router.route("/api/user/<userId>/tasks/user/<taskId>", methods=['GET'])
@@ -74,7 +75,7 @@ def get_personl_task_by_taskId(userId, taskId):
 @logger.http_request_logging
 @auth.requires_auth
 def put_personl_task_by_taskId(userId, taskId):
-  return personal_task_controller.put_personal_task_by_taskId(request.form.to_dict(), taskId)
+  return personal_task_controller.put_personal_task_by_taskId(request.json, taskId)
 
 # タスクIDで指定したタスクを削除
 @router.route("/api/user/<userId>/tasks/user/<taskId>", methods=['DELETE'])
@@ -106,7 +107,7 @@ def get_group_task_by_groupId(groupId):
 @logger.http_request_logging
 @auth.requires_auth
 def post_group_task(groupId):
-  return group_task_controller.post_group_task(request.form.to_dict())
+  return group_task_controller.post_group_task(request.json)
 
 #指定したグループの指定したタスクの情報を取得
 @router.route("/api/group/<groupId>/tasks/<taskId>",methods=['GET'])
@@ -120,7 +121,7 @@ def get_group_task_by_taskId(groupId, taskId):
 @logger.http_request_logging
 @auth.requires_auth
 def put_group_task_by_taskId(groupId, taskId):
-  return group_task_controller.put_group_task_info(request.form.to_dict(), taskId)
+  return group_task_controller.put_group_task_info(request.json, taskId)
   
 #指定したグループの指定したタスクを削除
 @router.route("/api/group/<groupId>/tasks/<taskId>",methods=['DELETE'])
