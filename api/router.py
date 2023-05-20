@@ -101,6 +101,14 @@ def get_group_task_by_userId(userId):
 def post_new_group():
   return group_task_controller.post_new_group(request.json)
 
+# グループの情報を取得するAPI
+@router.route("/api/group/<groupId>", methods=['GET'])#group_tasks.pyに存在しない
+@logger.http_request_logging
+@auth.requires_auth
+def get_group_info_by_userId(groupId):
+  return group_task_controller.get_group_info_by_userId(int(groupId))
+
+
 # グループIDで指定したグループのタスク一覧を取得
 @router.route("/api/group/<groupId>/tasks",methods=['GET'])
 @logger.http_request_logging

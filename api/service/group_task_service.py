@@ -35,6 +35,16 @@ def create_new_group(req):
         "createdGroup": create_group_response_model(newGroup),
     }))
 
+# グループの情報を取得
+def get_group_info_logic(groupId):
+    group_schema = GroupSchema()
+    group = Group.get_group_info_by_groupId(groupId)
+    group = group_schema.dump(group)
+
+    return make_response(jsonify({
+        "code": 200,
+        "group": create_group_response_model(group),
+    }))
 
 #グループIDで指定したグループのタスク一覧を取得
 def get_group_task_list_by_groupId_logic(groupId):

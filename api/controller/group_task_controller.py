@@ -8,6 +8,11 @@ def get_all_group_task_by_userId(userId):
 def post_new_group(reqBody):
     return create_new_group(reqBody)
 
+# グループの情報を取得する
+def get_group_info_by_userId(groupId):
+    return get_group_info_logic(groupId)
+
+
 #グループIDで指定したグループのタスク一覧を取得
 def get_group_task_list_by_groupId(groupId):
     return get_group_task_list_by_groupId_logic(groupId)

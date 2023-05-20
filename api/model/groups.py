@@ -28,6 +28,12 @@ class Group(db.Model):
         return db.session.query(Group)\
             .filter(Group.groupId == groupId)\
             .one()
+    
+    # グループIDで指定したグループの情報を取得する
+    def get_group_info_by_groupId(groupId):
+        return db.session.query(Group) \
+            .filter(Group.groupId == groupId) \
+            .one()
 
     def create_group(group):
         record = Group(
