@@ -22,11 +22,11 @@ def create_app():
   CORS(
     app,
     resources = {
-      r"/api/*": {"origins": ["http://localhost", "http://localhost:4200"]}
+      r"/api/*": {"origins": {"origins": "*"}}
     }
   )
   return app
 
 app = create_app()
 if __name__ == "__main__":
-  app.run(host='0.0.0.0', debug=True, port=5000, threaded=True, use_reloader=False)
+  app.run(host='0.0.0.0', debug=True, port=27555, threaded=True, use_reloader=False)
