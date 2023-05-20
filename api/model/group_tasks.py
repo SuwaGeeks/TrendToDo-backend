@@ -73,7 +73,6 @@ class GroupTasks(db.Model):
             .filter(GroupTasks.taskId == task_id).delete()
 
 
-        
 # Difinition of User Schema with Marshmallow
 # refer: https://flask-marshmallow.readthedocs.io/en/latest/
 class GroupTasksSchema(ma.SQLAlchemyAutoSchema):

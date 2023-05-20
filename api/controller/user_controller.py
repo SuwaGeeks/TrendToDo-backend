@@ -11,11 +11,3 @@ def update_user_info(reqBody, userId):
 
 def login_user(reqBody):
   return user_login_rogic(reqBody)
-
-# ユーザの参加しているグループの一覧を取得するAPI
-def get_user_group_by_userId(userId):
-  return get_user_group_list_logic_by_userId(userId)
-
-# 新しいグループに参加するAPI
-def post_user_group(reqBody, userId):
-  return join_new_group_logic(reqBody, userId)

@@ -4,6 +4,14 @@ from service.group_task_service import *
 def get_all_group_task_by_userId(userId):
     return get_all_group_task_by_userId_logic(userId)
 
+# ユーザの参加しているグループの一覧を取得するAPI
+def get_user_group_by_userId(userId):
+  return get_user_group_list_logic_by_userId(userId)
+
+# 新しいグループに参加するAPI
+def post_user_group(reqBody, userId):
+  return join_new_group_logic(reqBody, userId)
+
 # 新しいグループを作成する
 def post_new_group(reqBody):
     return create_new_group(reqBody)

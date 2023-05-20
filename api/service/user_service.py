@@ -1,8 +1,5 @@
 from flask import make_response, jsonify
 from model.users import User, UserSchema
-from model.group_users import GroupUser, GroupUserSchema
-from model.groups import Group, GroupSchema
-from service.group_task_service import create_group_response_model
 import hashlib
 
 def get_user_logic():
@@ -55,26 +52,3 @@ def user_login_rogic(req):
             'msg': 'ログインに失敗しました'
         }))
     
-# ユーザの参加しているグループの一覧を取得する処理
-def get_user_group_list_logic_by_userId(userId):
-    group_users = GroupUser.get_all_group_by_user_id(userId)
-    group_user_schema = GroupUserSchema(many=True)
-    group_users = group_user_schema.dump(group_users)
-
-    group_schema = GroupSchema(many=True)
-    groups = Group.get_groupList_from_group_user(group_users)
-
-    return make_response(jsonify({
-        "code": 200,
-        "group": group_schema.dump(groups)
-    }))
-
-# 新しいグループに参加する処理
-def join_new_group_logic(req, userId):
-    GroupUser.user_join_group(req['groupId'], userId)
-
-    responseGroup = Group.get_group_info_by_groupId(req['groupId'])
-    return make_response(jsonify({
-        "code": 200,
-        "group": create_group_response_model(responseGroup),
-    }))

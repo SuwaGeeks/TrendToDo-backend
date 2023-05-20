@@ -3,7 +3,6 @@ from controller import user_controller
 from controller import personal_task_controller
 from controller import group_task_controller
 from logging import config
-import json
 from json import load
 import auth
 import logger
@@ -44,20 +43,6 @@ def patch_users_by_userId(userId):
 @auth.requires_auth
 def post_login():
   return user_controller.login_user(request.json)
-
-# ユーザの参加しているグループの一覧を取得するAPI
-@router.route("/api/user/<userId>/group", methods=['GET'])
-@logger.http_request_logging
-@auth.requires_auth
-def get_user_group_by_userId(userId):
-  return user_controller.get_user_group_by_userId(userId)
-
-# 新しいグループに参加するAPI
-@router.route("/api/user/<userId>/group", methods=['POST'])
-@logger.http_request_logging
-@auth.requires_auth
-def post_user_group(userId):
-  return user_controller.post_user_group(request.json, userId)
 
 
 ##################################
@@ -107,6 +92,20 @@ def delete_personl_task_by_taskId(userId, taskId):
 @auth.requires_auth
 def get_group_task_by_userId(userId):
   return group_task_controller.get_all_group_task_by_userId(userId)
+
+# ユーザの参加しているグループの一覧を取得するAPI
+@router.route("/api/user/<userId>/group", methods=['GET'])
+@logger.http_request_logging
+@auth.requires_auth
+def get_user_group_by_userId(userId):
+  return user_controller.get_user_group_by_userId(userId)
+
+# 新しいグループに参加するAPI
+@router.route("/api/user/<userId>/group", methods=['POST'])
+@logger.http_request_logging
+@auth.requires_auth
+def post_user_group(userId):
+  return user_controller.post_user_group(request.json, userId)
 
 # 新しいグループを作成するAPI
 @router.route("/api/group", methods=['POST'])#group_tasks.pyに存在しない
