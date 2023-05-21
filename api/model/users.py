@@ -64,7 +64,7 @@ class User(db.Model):
     def check_user(user):
         return db.session.query(User) \
             .filter(User.userName == user['userName']) \
-            .filter(User.password == user['password']).all()
+            .filter(User.password == user['userPassword']).all()
     
     # グループユーザの配列からユーザ情報を取得する
     def get_user_list_from_group_user(group_users):
