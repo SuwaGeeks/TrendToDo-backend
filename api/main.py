@@ -22,9 +22,9 @@ def create_app():
   app.config["JSONIFY_MIMETYPE"] = "application/json; charset=utf-8"
   CORS(
     app,
-    resources = {
-      r"/api/*": {"origins": {"origins": "*"}}
-    }
+    # resources = {
+    #   r"/api/*": {"origins": {"origins": "*"}}
+    # }
   )
   return app
 
