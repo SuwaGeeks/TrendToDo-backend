@@ -42,5 +42,5 @@ def delete_group_task(taskId):
     return delete_group_task_logic(taskId)
 
 #グループタスクを消化する
-def submit_group_task(taskId):
-    return submit_group_task_logic(taskId)
+def submit_group_task(reqBody, taskId):
+    return submit_group_task_logic(reqBody, taskId)

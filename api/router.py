@@ -173,7 +173,7 @@ def post_submit_personal_task(taskId):
 @logger.http_request_logging
 @auth.requires_auth
 def post_submit_group_task(taskId):
-  return group_task_controller.submit_group_task(taskId)
+  return group_task_controller.submit_group_task(request.json, taskId)
 
 
 ##################################

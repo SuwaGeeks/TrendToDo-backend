@@ -47,6 +47,7 @@ def join_new_group_logic(req, userId):
 def create_group_response_model(group):
     group_schema = GroupSchema()
     group = group_schema.dump(group)
+    # print(group)
     groupId = group["groupId"]
 
     group_user_schema = GroupUserSchema(many=True)
@@ -61,9 +62,23 @@ def create_group_response_model(group):
     group_task_schema = GroupTasksSchema(many=True)
     groupTasks = GroupTasks.get_group_tasks_by_group_id(groupId)
     groupTasks = group_task_schema.dump(groupTasks)
+    for i in range(len(groupTasks)):
+        groupTasks[i] = create_group_task_response_model(groupTasks[i])
     group['groupTasks'] = groupTasks
 
     return group
+
+# グループタスクのレスポンスモデルを作成する関数
+def create_group_task_response_model(group_task):
+    groupTaskId = group_task['taskId']
+
+    weight = GroupTaskLog.calc_group_task_weight_by_task_id(groupTaskId)[0][0] or 0.
+    taskTime = GroupTaskLog.calc_group_task_time_by_task_id(groupTaskId)[0][0] or 0.
+
+    group_task['taskWeight'] = float(weight)
+    group_task['meanTime'] = float(taskTime)
+    
+    return group_task
 
 # 新しいグループを作成する
 def create_new_group(req):
@@ -125,10 +140,19 @@ def delete_group_task_logic(taskId):
     return make_response(jsonify({"code":200}))
 
 #グループタスクを消化する
-def submit_group_task_logic(taskId):
-    newlog=GroupTaskLog.add_group_task_log(taskId)
-    groupTaskLog_schema=GroupTaskLogSchema()
+def submit_group_task_logic(req, taskId):
+    targetTask = GroupTasks.get_group_task_by_task_id(taskId)
+
+    req['taskId'] = taskId
+    req['groupId'] = targetTask.taskGroupId
+    GroupTaskLog.add_group_task_log(req)
+
+    task = GroupTasks.get_group_task_by_task_id(taskId)
+    group_task_schema=GroupTasksSchema()
+    group_task = group_task_schema.dump(task)
+    group_task = create_group_task_response_model(group_task)
+
     return make_response(jsonify({
-        "code":200,
-        "task":groupTaskLog_schema.dump(newlog)
+        "code": 200,
+        "task": group_task
     }))

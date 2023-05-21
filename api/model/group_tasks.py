@@ -10,17 +10,13 @@ class GroupTasks(db.Model):
     taskName = db.Column(db.String(225), nullable=False)
     taskContent= db.Column(db.String(225), nullable=False)
     taskLimit = db.Column(db.DateTime, nullable=False)
-    taskWeight = db.Column(db.Integer, nullable=False)
-    meanTime = db.Column(db.Integer, nullable=False)
 
     # Contructor
-    def __init__(self, taskGroupId, taskName, taskContent, taskLimit, taskWeight=0, meanTime=0):
+    def __init__(self, taskGroupId, taskName, taskContent, taskLimit):
         self.taskGroupId = taskGroupId
         self.taskName = taskName
         self.taskContent = taskContent
         self.taskLimit = taskLimit
-        self.taskWeight = taskWeight
-        self.meanTime = meanTime
 
     def __repr__(self):
         return '<GroupTask %r>' % self.taskName
