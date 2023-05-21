@@ -48,6 +48,6 @@ def user_login_rogic(req):
     else :
         return make_response(jsonify({
             'code': 406,
-            'msg': 'ログインに失敗しました'
+            'message': 'ログインに失敗しました'
         }))
     
