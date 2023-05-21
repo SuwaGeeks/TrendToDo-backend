@@ -63,7 +63,6 @@ class User(db.Model):
     # パスワードとユーザ名とIDでユーザ認証をする
     def check_user(user):
         return db.session.query(User) \
-            .filter(User.userId == user['userId']) \
             .filter(User.userName == user['userName']) \
             .filter(User.password == user['password']).all()
     

@@ -35,10 +35,9 @@ def update_user_logic(req, userId):
 
 # ログインの認証をする処理
 def user_login_rogic(req):
-    req['userId'] = int(req['userId'])
+    req['userName'] = req['userName']
     req['password'] = hashlib.sha256(req["password"].encode("utf-8")).hexdigest()
     user = User.check_user(req)
-    print(user)
     if user:
         user_schema = UserSchema()
         return make_response(jsonify({
