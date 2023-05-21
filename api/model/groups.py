@@ -39,7 +39,7 @@ class Group(db.Model):
     # グループ名からグループを取得する
     def get_group_by_groupName(groupName):
         return db.session.query(Group) \
-            .filter(Group.groupName == groupName).one()
+            .filter(Group.groupName == groupName).all()
 
     def create_group(group):
         record = Group(

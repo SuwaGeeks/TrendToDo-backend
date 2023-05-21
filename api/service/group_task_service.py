@@ -35,7 +35,14 @@ def get_user_group_list_logic_by_userId(userId):
 
 # 新しいグループに参加する処理
 def join_new_group_logic(req, userId):
-    req['groupId'] = Group.get_group_by_groupName(req['groupName']).groupId
+    targetGroup = Group.get_group_by_groupName(req['groupName'])
+    if not targetGroup:
+        return make_response(jsonify({
+            "code": 404,
+            "message": "指定したグループ名のグループが見つかりません"
+        }))
+
+    req['groupId'] = targetGroup[0].groupId
 
     GroupUser.user_join_group(req['groupId'], userId)
 
