@@ -35,6 +35,8 @@ def get_user_group_list_logic_by_userId(userId):
 
 # 新しいグループに参加する処理
 def join_new_group_logic(req, userId):
+    req['groupId'] = Group.get_group_by_groupName(req['groupName']).groupId
+
     GroupUser.user_join_group(req['groupId'], userId)
 
     responseGroup = Group.get_group_info_by_groupId(req['groupId'])

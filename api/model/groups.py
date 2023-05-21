@@ -35,6 +35,11 @@ class Group(db.Model):
         return db.session.query(Group) \
             .filter(Group.groupId == groupId) \
             .one()
+    
+    # グループ名からグループを取得する
+    def get_group_by_groupName(groupName):
+        return db.session.query(Group) \
+            .filter(Group.groupName == groupName).one()
 
     def create_group(group):
         record = Group(

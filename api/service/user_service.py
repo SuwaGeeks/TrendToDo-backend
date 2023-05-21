@@ -4,7 +4,7 @@ import hashlib
 
 def get_user_logic():
     users = User.get_user_list()
-    user_schema = UserSchema(many=True)
+    user_schema = UserSchema(many=True, only=("userId", "userName"))
     return make_response(jsonify({
         'code': 200,
         'users': user_schema.dump(users)
