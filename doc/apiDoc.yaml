@@ -1,280 +1,30 @@
 openapi: 3.0.0
-x-stoplight:
-  id: 5nyaeztta8nkp
 info:
   title: TrendToDoAPI
-  version: '1.9'
+  version: '2.0'
   description: ''
 servers:
   - url: 'http://mochi-yu.com:27555/api'
 paths:
-  /user:
+  # アプリのデータを取得する
+  '/getAppData':
     post:
-      summary: 新しいユーザの作成
-      operationId: post-user
-      responses:
-        '201':
-          description: ユーザを作成
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  newUser:
-                    $ref: '#/components/schemas/User'
-        '400':
-          description: 不正なリクエストです。
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 400
-                    message: リクエストの形式が間違っています
-        '401':
-          description: 認証されていないリクエスト
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 不正なリクエストです。
-        '409':
-          description: 既にユーザIDが使用されている
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 409
-                    message: 使用できないユーザIDです
+      summary: '個人タスク一覧を取得'
+      tags:
+        - System
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                userName:
+                userId:
                   type: string
-                  x-stoplight:
-                    id: da5c1ojyka2ru
-                  description: ユーザ名
-                password:
-                  type: string
-                  x-stoplight:
-                    id: m0ck3vghgm404
-                  description: パスワード
               required:
-                - userName
-                - password
-            examples:
-              Example 1:
-                value:
-                  userName: string
-                  password: string
-        description: ''
-      description: 新しいユーザを追加する。
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: apiToken
-          description: APIに接続するためのトークン
-      tags:
-        - User
-  '/users/{userId}':
-    parameters:
-      - schema:
-          type: integer
-        name: userId
-        in: path
-        required: true
-        description: ユーザのID
-    patch:
-      summary: ユーザデータの更新
-      operationId: patch-users-userId
-      responses:
-        '202':
-          description: ユーザ情報を更新
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  user:
-                    $ref: '#/components/schemas/User'
-        '401':
-          description: ユーザトークンが正しくない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-        '404':
-          description: 指定したIDのユーザが見つからない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: ユーザIDが間違っています
-      description: ユーザの情報を更新する。
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                usreName:
-                  type: string
-                  x-stoplight:
-                    id: rh5nt8hk9f44j
-                  description: 新しいユーザ名
-                password:
-                  type: string
-                  x-stoplight:
-                    id: liqpyc7kjjjg6
-                  description: 新しいパスワード
-            examples:
-              ユーザ名の更新:
-                value:
-                  usreName: string
-              パスワードの更新:
-                value:
-                  password: string
-        description: 変更される情報を送信する。
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを識別するためのトークン
-      tags:
-        - User
-  /login:
-    post:
-      summary: ログイン用のエンドポイント
-      tags:
-        - User
-      responses:
-        '201':
-          description: ログインに成功
-          headers: {}
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  user:
-                    $ref: '#/components/schemas/User'
-                    x-stoplight:
-                      id: u06xps12xg6j8
-                    description: ログインに成功したユーザ
-                  userToken:
-                    type: string
-                    x-stoplight:
-                      id: 41ptx8dkiv8j1
-                    description: 新しいユーザトークン
-              examples:
-                Example 1:
-                  value:
-                    user:
-                      userId: 0
-                      userName: string
-                    userToken: string
-            application/xml:
-              schema:
-                type: object
-                properties:
-                  user:
-                    $ref: '#/components/schemas/User'
-                    x-stoplight:
-                      id: xpp3kxj8fzrcv
-                  userToken:
-                    type: string
-                    x-stoplight:
-                      id: d9nwea30mp3q4
-              examples: {}
-        '401':
-          description: 認証されていないリクエスト
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 不正なリクエストです
-        '406':
-          description: ログインに失敗
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 406
-                    message: ログインに失敗しました
-      operationId: get-login
-      description: ユーザがログインをする。
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                userName:
-                  type: string
-                  x-stoplight:
-                    id: k1xf5wo2w7hsh
-                  description: 一意に定まるユーザID
-                userPassword:
-                  type: string
-                  x-stoplight:
-                    id: 0z0aklra6i936
-                  description: ユーザのパスワード
-              required:
-                - userName
-                - userPassword
-            examples:
-              Example 1:
-                value:
-                  userName: string
-                  userPassword: string
-        description: ''
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: apiToken
-          description: APIに接続するためのトークン
-  '/user/{userId}/tasks/user':
-    get:
-      summary: 個人タスクの一覧を取得
-      tags:
-        - UserTask
+                - userId
       responses:
         '200':
-          description: ''
+          description: '指定したユーザーIDに必要なアプリのデータを取得'
           content:
             application/json:
               schema:
@@ -282,72 +32,55 @@ paths:
                 properties:
                   userTasks:
                     type: array
-                    x-stoplight:
-                      id: s7ju6ktiwc8bx
                     items:
                       $ref: '#/components/schemas/UserTask'
-                      x-stoplight:
-                        id: v0w3eabbk9tf3
-              examples:
-                Example 1:
-                  value:
-                    userTasks:
-                      - taskId: 0
-                        hostUserId: user1
-                        taskName: Create TrendToDo App
-                        taskContent: Create TrendToDo app by GeekCamp.
-                        taskLimit: date record
-        '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 0
-                    message: string
+                  userGroups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        groupInfo:
+                          $ref: '#/components/schemas/Group'
+                        groupTask:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/GroupTask'
         '404':
           description: 指定したユーザIDのユーザが存在しない
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないユーザです
-      operationId: get-user-tasks
       description: 指定したユーザIDのユーザの、個人タスクの一覧を取得する。
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを識別するためのトークン
-    parameters:
-      - schema:
-          type: integer
-        name: userId
-        in: path
-        required: true
-        description: タスクを取得するユーザのユーザID
+  
+  # 新しい個人を追加
+  '/addUserTask':
     post:
       summary: 新しい個人タスクの追加
-      operationId: post-user-userId-tasks-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskName:
+                  type: string
+                  description: タスクの名前
+                taskContent:
+                  type: string
+                  description: タスクの中身
+                taskLimit:
+                  type: string
+                  description: タスクの期限
+                addUserId:
+                  type: string
+              required:
+                - taskName
+                - addUserId
+      tags:
+        - UserTask
       responses:
-        '201':
+        '200':
           description: 新しいタスクを追加
           content:
             application/json:
@@ -359,176 +92,36 @@ paths:
         '400':
           description: タスク名が入力されていない
         '401':
-          description: ユーザトークンが一致しない
+          description: ユーザIDが一致しない
         '404':
           description: 指定したユーザが見つからない
       description: 新しい個人タスクの追加
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを識別するためのトークン
+
+  # タスクを更新する
+  '/updateUserTask':
+    post:
+      summary: タスクIDで指定したタスクの内容を変更
+      tags:
+        - UserTask
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                tasikName:
+                taskName:
                   type: string
-                  x-stoplight:
-                    id: x324ibxu6skf4
-                  description: タスクの名前
                 taskContent:
                   type: string
-                  x-stoplight:
-                    id: spf5epwfcaorn
-                  description: タスクの中身
                 taskLimit:
                   type: string
-                  x-stoplight:
-                    id: ef4t1720ne7i2
-                  description: タスクの期限
+                userId:
+                  type: string
+                taskId:
+                  type: string
               required:
-                - tasikName
-      tags:
-        - UserTask
-  '/user/{userId}/group':
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-        description: 一意に定まるユーザのID
-    get:
-      summary: ユーザの参加しているグループの一覧を取得する
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  groups:
-                    type: array
-                    x-stoplight:
-                      id: g5vu07hpo0ae8
-                    description: ユーザの参加しているグループの一覧
-                    items:
-                      $ref: '#/components/schemas/Group'
-                required:
-                  - groups
-      operationId: get-user-userId-group
-      description: ユーザの参加しているグループの一覧を取得する
-      tags:
-        - GroupTask
-    post:
-      summary: 新しいグループに参加する
-      operationId: post-user-userId-group
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  joinedGroup:
-                    $ref: '#/components/schemas/Group'
-              examples:
-                Example 1:
-                  value:
-                    group:
-                      groupId: 0
-                      groupName: string
-                      groupUsers:
-                        - userId: 0
-                          userName: string
-                      groupTasks:
-                        - taskId: 0
-                          taskGroupId: string
-                          taskName: string
-                          taskContent: string
-                          taskLimit: string
-                          taskWeight: 0
-                          meanTime: 0
-                          finished: true
-      description: 新しいグループに参加する
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                groupId:
-                  type: integer
-                  x-stoplight:
-                    id: vqy6p02r7d157
-            examples:
-              Example 1:
-                value:
-                  groupId: 0
-      tags:
-        - GroupTask
-  '/user/{userId}/tasks/user/{taskId}':
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-        description: 一意に定まるユーザのID
-      - schema:
-          type: string
-        name: taskId
-        in: path
-        required: true
-        description: 一意に定まるタスクのID
-    get:
-      summary: タスクIDで指定したタスクの情報を取得
-      tags:
-        - UserTask
-      responses:
-        '200':
-          description: タスクの情報を取得
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  task:
-                    $ref: '#/components/schemas/UserTask'
-        '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-        '404':
-          description: 指定したユーザIDのユーザが存在しない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないユーザです
-      operationId: get-user-userId-tasks-user-taskId
-      description: タスクIDで指定したタスクの情報を取得
-    put:
-      summary: タスクIDで指定したタスクの内容を変更
-      operationId: put-user-userId-tasks-user-taskId
+                - userId
+                - taskId
       responses:
         '202':
           description: タスクの内容を更新
@@ -540,522 +133,56 @@ paths:
                   task:
                     $ref: '#/components/schemas/UserTask'
         '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-        '404':
-          description: 指定したユーザIDのユーザが存在しない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないユーザです
-      description: タスクIDで指定したタスクの内容を変更
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを識別するためのトークン
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                taskName:
-                  type: string
-                  x-stoplight:
-                    id: k07mkthxflkq3
-                taskContent:
-                  type: string
-                  x-stoplight:
-                    id: ysgs06t4vm7o5
-                taskLimit:
-                  type: string
-                  x-stoplight:
-                    id: wv1upwfl9noa2
-        description: タスクの内容を変更
-      tags:
-        - UserTask
-    delete:
-      summary: タスクIDで指定したタスクを削除
-      operationId: delete-user-userId-tasks-user-taskId
-      responses:
-        '200':
-          description: タスクを削除
-        '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-        '404':
-          description: 指定したユーザIDのユーザが存在しない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないユーザです
-      description: タスクIDで指定したタスクを削除
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: usetToken
-          description: ユーザを識別するためのトークン
-      tags:
-        - UserTask
-  '/user/{userId}/tasks/group':
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-        description: 一意に定まるユーザのID
-    get:
-      summary: ユーザIDで指定したユーザが所属しているグループの、すべてのタスクを取得
-      tags:
-        - GroupTask
-      responses:
-        '200':
-          description: グループタスクの一覧を取得
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  groupTasks:
-                    type: array
-                    x-stoplight:
-                      id: 503682q2yx7ok
-                    items:
-                      $ref: '#/components/schemas/GroupTask'
-                      x-stoplight:
-                        id: mu7hexttv6p4o
-              examples:
-                Example 1:
-                  value:
-                    groupTasks:
-                      - taskId: 0
-                        taskGroupId: string
-                        taskName: string
-                        taskContent: string
-                        taskLimit: string
-                        taskWeight: 0
-                        meanTime: 0
-        '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-        '404':
-          description: 指定したユーザIDのユーザが存在しない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないユーザです
-      operationId: get-user-userId-group-tasks
-      description: ユーザIDで指定したユーザが所属しているグループの、すべてのタスクを取得
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを識別するためのトークン
-  /group:
-    post:
-      summary: 新しいグループを作成する
-      operationId: post-group
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  createdGroup:
-                    $ref: '#/components/schemas/Group'
-      description: 新しいグループを作成する
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                groupName:
-                  type: string
-                  x-stoplight:
-                    id: 3314gj1lrw3ya
-                  description: グループ名
-              required:
-                - groupName
-      tags:
-        - GroupTask
-  '/group/{groupId}':
-    parameters:
-      - schema:
-          type: string
-        name: groupId
-        in: path
-        required: true
-        description: 一意に定まるグループのID
-    get:
-      summary: グループの情報を取得
-      tags:
-        - GroupTask
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  group:
-                    $ref: '#/components/schemas/Group'
-      operationId: get-group-groupId
-      description: グループの情報を取得
-  '/group/{groupId}/tasks':
-    get:
-      summary: グループIDで指定したグループのタスク一覧を取得
-      tags:
-        - GroupTask
-      responses:
-        '200':
-          description: グループタスクの一覧を取得
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  groupTask:
-                    $ref: '#/components/schemas/GroupTask'
-        '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-        '404':
-          description: 指定したユーザIDのユーザが存在しない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないユーザです
-      operationId: get-group-tasks
-      description: グループIDで指定したグループのタスク一覧を取得
-      parameters:
-        - schema:
-            type: string
-          in: header
-          description: ユーザを識別するためのトークン
-          name: userToken
-        - schema:
-            type: string
-          in: query
-          name: usreId
-          description: ユーザのID
-    parameters:
-      - schema:
-          type: integer
-        name: groupId
-        in: path
-        required: true
-        description: 一意に定まるグループのID
-    post:
-      summary: グループIDで指定したグループに、新しいタスクを追加
-      operationId: post-group-groupId-tasks
-      responses:
-        '201':
-          description: タスクを追加
-          headers: {}
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  task:
-                    $ref: '#/components/schemas/GroupTask'
-        '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-        '404':
-          description: 指定したユーザIDのユーザが存在しない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないユーザです
-      description: グループIDで指定したグループに、新しいタスクを追加
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: usetToken
-          description: ユーザを識別するためのトークン
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                groupId:
-                  type: string
-                  x-stoplight:
-                    id: wz8dcqu5sggjt
-                taskName:
-                  type: string
-                  x-stoplight:
-                    id: papsqcafdwv1g
-                taskContent:
-                  type: string
-                  x-stoplight:
-                    id: x3ppy6og0k5u6
-                taskLimit:
-                  type: string
-                  x-stoplight:
-                    id: uczq1csldovwy
-              required:
-                - groupId
-                - taskName
-          application/xml:
-            schema:
-              type: object
-              properties: {}
-      tags:
-        - GroupTask
-  '/group/{groupId}/tasks/{taskId}':
-    parameters:
-      - schema:
-          type: string
-        name: groupId
-        in: path
-        required: true
-        description: グループのID
-      - schema:
-          type: string
-        name: taskId
-        in: path
-        required: true
-        description: タスクのID
-    get:
-      summary: 指定したグループの指定したタスクの情報を取得
-      tags:
-        - GroupTask
-      responses:
-        '200':
-          description: タスクの情報を取得
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  task:
-                    $ref: '#/components/schemas/GroupTask'
-        '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-        '404':
-          description: 指定したユーザIDのユーザが存在しない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないユーザです
-      operationId: get-group-groupId-tasks-taskId
-      description: 指定したグループの指定したタスクの情報を取得
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを認証するためのトークン
-    put:
-      summary: 指定したグループの指定したタスクの内容を変更
-      operationId: put-group-groupId-tasks-taskId
-      responses:
-        '202':
-          description: タスクの内容を変更
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  task:
-                    $ref: '#/components/schemas/GroupTask'
-        '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
-        '404':
-          description: 指定したユーザIDのユーザが存在しない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないユーザです
-      description: 指定したグループの指定したタスクの内容を変更
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを認証するためのトークン
-      tags:
-        - GroupTask
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                taskName:
-                  type: string
-                  x-stoplight:
-                    id: ctcwrdhaxigbk
-                taskContent:
-                  type: string
-                  x-stoplight:
-                    id: uqqoaacr0kn7e
-                taskLimit:
-                  type: string
-                  x-stoplight:
-                    id: inn4flc3o59zo
-    delete:
-      summary: 指定したグループの指定したタスクを削除
-      operationId: delete-group-groupId-tasks-taskId
-      responses:
-        '200':
-          description: タスクを削除
-        '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
+          description: ユーザIDが一致しない
         '404':
           description: 指定したタスクIDのタスクが存在しない
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないタスクです
-      description: 指定したグループの指定したタスクを削除
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを認証するためのトークン
+
+  # ユーザータスクを削除する
+  '/deleteUserTask':
+    post:
+      summary: タスクIDで指定したタスクを削除
+      description: タスクIDで指定したタスクを削除
       tags:
-        - GroupTask
-  '/submit/user/{taskId}':
-    parameters:
-      - schema:
-          type: string
-        name: taskId
-        in: path
-        required: true
-        description: タスクのID
+        - UserTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                taskId:
+                  type: string
+      responses:
+        '200':
+          description: タスクを削除
+        '401':
+          description: ユーザIDが一致しない
+        '404':
+          description: 指定したタスクIDのタスクが存在しない
+
+  # 個人タスクを消化する
+  '/submitUserTask':
     post:
       summary: 個人タスクを消化する
-      operationId: post-submit-user-taskId
+      description: 個人タスクを消化する
+      tags:
+        - UserTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                taskId:
+                  type: string
       responses:
         '202':
           description: 消化を受け付ける
@@ -1067,50 +194,242 @@ paths:
                   task:
                     $ref: '#/components/schemas/UserTask'
         '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
+          description: ユーザIDが一致しない
         '404':
           description: 指定したタスクIDのタスクが存在しない
+
+
+  # グループに参加する/参加しているグループを取得するエンドポイント
+  '/joinGroup':
+    # get:
+    #   summary: "ユーザIDで指定したユーザの所属しているグループを全て取得"
+    #   tags: 
+    #     - Group
+    #   responses:
+    #     '200':
+    #       description: グループの一覧を取得
+    #       content: 
+    #         application/json:
+    #           schema:
+    #             type: object
+    #             properties: 
+    #               groups: 
+    #                 type: array
+    #                 items:
+    #                   $ref: '#/components/schemas/Group'
+    post:
+      summary: "ユーザIDで指定したユーザがリクエストボディのグループIDで指定したグループに所属する"
+      tags:
+        - Group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupId:
+                  type: string
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: "正常にグループに参加"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないタスクです
-      description: 個人タスクを消化する
-      requestBody:
-        content: {}
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを識別するためのトークン
+                type: object
+                properties:
+                  joinedGroup:
+                    $ref: '#/components/schemas/Group'
+        '400':
+          description: "参加しているグループが多すぎる"
+
+  # グループを作るエンドポイント
+  '/createGroup':
+    post:
+      summary: 新しいグループを作成する
       tags:
-        - SubmitTask
-  '/submit/group/{taskId}':
-    parameters:
-      - schema:
-          type: string
-        name: taskId
-        in: path
-        required: true
-        description: タスクのID
+        - Group
+      description: 新しいグループを作成する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupName:
+                  type: string
+                  description: グループ名
+              required:
+                - groupName
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  createdGroup:
+                    $ref: '#/components/schemas/Group'
+  
+  # 現在存在しているグループの一覧を取得する
+  '/getGroupList':
+    get:
+      summary: グループ一覧の取得
+      description: 現在存在しているグループの一覧を取得する
+      tags:
+        - Group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+
+  # グループタスクを追加する
+  '/addGroupTask':
+    post:
+      summary: 新しいグループタスクの追加
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupId:
+                  type: string
+                taskName:
+                  type: string
+                  description: タスクの名前
+                taskContent:
+                  type: string
+                  description: タスクの中身
+                taskLimit:
+                  type: string
+                  description: タスクの期限
+                addUserId:
+                  type: string
+              required:
+                - taskName
+                - addUserId
+      tags:
+        - GroupTask
+      responses:
+        '200':
+          description: 新しいタスクを追加
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/GroupTask'
+        '400':
+          description: タスク名が入力されていない
+        '401':
+          description: ユーザがグループに居ないが一致しない
+        '404':
+          description: 指定したユーザが見つからない
+      description: 新しい個人タスクの追加
+
+  # グループタスクをパブリックタスクに設定する
+
+  # グループタスクを変更する
+  '/updateGroupTask':
+    post:
+      summary: タスクIDで指定したタスクの内容を変更
+      tags:
+        - GroupTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskName:
+                  type: string
+                taskContent:
+                  type: string
+                taskLimit:
+                  type: string
+                userId:
+                  type: string
+                groupId:
+                  type: string
+                taskId:
+                  type: string
+              required:
+                - userId
+                - taskId
+      responses:
+        '202':
+          description: タスクの内容を更新
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/UserTask'
+        '401':
+          description: ユーザIDが一致しない
+        '404':
+          description: 指定したタスクIDのタスクが存在しない
+
+  # グループタスクを削除する
+  '/deleteGroupTask':
+    post:
+      summary: タスクIDで指定したタスクを削除
+      description: タスクIDで指定したタスクを削除
+      tags:
+        - GroupTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                groupId:
+                  type: string
+                taskId:
+                  type: string
+      responses:
+        '200':
+          description: タスクを削除
+        '401':
+          description: ユーザIDが一致しない
+        '404':
+          description: 指定したタスクIDのタスクが存在しない
+
+  # グループタスクを消化する
+  '/submitGroupTask':
     post:
       summary: グループタスクを消化する
-      operationId: post-submit-group-taskId
+      description: グループタスクを消化する
+      tags:
+        - GroupTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                groupId:
+                  type: string
+                taskId:
+                  type: string
       responses:
         '202':
           description: 消化を受け付ける
@@ -1122,223 +441,109 @@ paths:
                   task:
                     $ref: '#/components/schemas/GroupTask'
         '401':
-          description: ユーザトークンが一致しない
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 401
-                    message: 認証されていないユーザです
+          description: ユーザIDがグループに参加していないか、グループが存在しない
         '404':
           description: 指定したタスクIDのタスクが存在しない
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: 存在しないタスクです
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: userToken
-          description: ユーザを識別するためのトークン
-      description: グループタスクを消化する
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                taskWeght:
-                  type: integer
-                  x-stoplight:
-                    id: 6lo3gkq35anw7
-                  description: タスクの重さ評価
-                taskTime:
-                  type: integer
-                  x-stoplight:
-                    id: 4gt5kyekohjvv
-                  description: タスクの実施時間
-                userId:
-                  type: integer
-                  x-stoplight:
-                    id: i3bi6vvlpvfwm
-      tags:
-        - SubmitTask
+
 components:
   schemas:
     User:
       title: User
       type: object
-      x-examples:
-        Example 1:
-          userId: string
-          userName: string
       properties:
         userId:
           type: integer
-          x-stoplight:
-            id: jcxhuippr306h
           description: 一意に定まるユーザのID
         userName:
           type: string
-          x-stoplight:
-            id: 0m54t83exrm3q
           description: ユーザ名
       required:
         - userId
         - userName
     Group:
       title: Group
-      x-stoplight:
-        id: vjn16hp7hup4v
       type: object
       properties:
         groupId:
-          type: integer
-          x-stoplight:
-            id: t0jp82d0i6fy4
-          description: 一意に定まるグループのID
+          type: string
+          description: グループのID
         groupName:
           type: string
-          x-stoplight:
-            id: 8l2zboxteilt0
           description: グループの名称
-        groupUsers:
-          x-stoplight:
-            id: 0ampqm6dp69lb
-          type: array
-          description: グループに参加しているユーザの一覧
-          items:
-            $ref: '#/components/schemas/User'
-        groupTasks:
-          x-stoplight:
-            id: e9x0j497cwz59
-          type: array
-          description: グループのタスク一覧
-          items:
-            $ref: '#/components/schemas/GroupTask'
       required:
         - groupId
         - groupName
-        - groupUsers
-        - groupTasks
     ErrorMessage:
       title: ErrorMessage
-      x-stoplight:
-        id: 17fzllnk4wivz
       type: object
       properties:
         statusCode:
           type: integer
-          x-stoplight:
-            id: 0ooufpya79ftk
           description: レスポンスのステータスコード
         message:
           type: string
-          x-stoplight:
-            id: cg7r1464hmwkl
           description: エラーメッセージ
     UserTask:
       title: UserTask
-      x-stoplight:
-        id: gxhv8qvvo0uuy
       type: object
       description: 個人タスク
       properties:
         taskId:
-          type: integer
-          x-stoplight:
-            id: kgdknj8xjb575
+          type: string
           description: 一意に定まるタスクのID
         hostUserId:
           type: string
-          x-stoplight:
-            id: 0712zlyipovq2
           description: タスクを作成したユーザのID
         taskName:
           type: string
-          x-stoplight:
-            id: 1ldoqvmy7ogqp
           description: タスクの名前
         taskContent:
           type: string
-          x-stoplight:
-            id: jlcauuy1sd8qm
           description: タスクの中身
         taskLimit:
           type: string
-          x-stoplight:
-            id: hzay0n8d6llfo
           description: タスクの期限
-        finished:
-          type: boolean
-          x-stoplight:
-            id: f1fdilgi87avd
+        finishedAt:
+          type: string
+          description: タスクの終了時刻。nullの場合はまだ終了していないタスク
       required:
         - hostUserId
         - taskName
     GroupTask:
       title: GroupTask
-      x-stoplight:
-        id: cbny64wljo8eo
       type: object
       description: グループタスク
       properties:
         taskId:
-          type: integer
-          x-stoplight:
-            id: nu3z94f3jverd
+          type: string
           description: 一意に定まるタスクのID
         taskGroupId:
           type: string
-          x-stoplight:
-            id: h04ecy7f87ziy
           description: タスクが属するグループのID
         taskName:
           type: string
-          x-stoplight:
-            id: 8pxlpmrcd9n5x
           description: タスクの名前
         taskContent:
           type: string
-          x-stoplight:
-            id: po0997t5dtbdj
           description: タスクの中身
         taskLimit:
           type: string
-          x-stoplight:
-            id: lv24eg7q8sce5
           description: タスクの期限
         taskWeight:
           type: number
-          x-stoplight:
-            id: kvto3q4813khw
           description: タスクの大変さ
         meanTime:
           type: integer
-          x-stoplight:
-            id: 34fa7pqak4l6i
           description: 平均の実施時間（単位：分）
         finished:
           type: boolean
-          x-stoplight:
-            id: 20cukdvlp1arc
   securitySchemes: {}
 tags:
-  - name: User
-    description: ユーザに関わるAPI
+  - name: System
+    description: アプリの動作に必要なAPI
   - name: UserTask
     description: 個人タスクに関わるAPI
+  - name: Group
+    description: グループに関わるAPI
   - name: GroupTask
     description: グループタスクに関わるAPI
-  - name: SubmitTask
-    description: タスクを消化するAPI
