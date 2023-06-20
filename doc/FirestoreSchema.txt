@@ -1,0 +1,29 @@
+users(userId)
+  - userName
+  - email
+
+userTasks
+  - ownerUserId
+  - title
+  - finishedAt
+  ....
+
+groups(groupId)
+  - groupName
+
+groupUsers
+  - userId
+  - groupId
+  - joinedAt
+
+groupTasks(taskId)
+  - groupId
+  - title
+  .....
+
+groupTaskLogs
+  - taskId
+  - userId
+  - finishedAt
+  - eva
+  - time
