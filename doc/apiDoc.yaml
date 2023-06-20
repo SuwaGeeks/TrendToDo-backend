@@ -9,7 +9,7 @@ paths:
   # アプリのデータを取得する
   '/getAppData':
     post:
-      summary: '個人タスク一覧を取得'
+      summary: 'アプリのデータを取得'
       tags:
         - System
       requestBody:
