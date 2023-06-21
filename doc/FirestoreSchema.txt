@@ -3,7 +3,7 @@ users(userId)
   - email
 
 userTasks
-  - ownerUserId
+  - hostUserId
   - title
   - finishedAt
   ....
