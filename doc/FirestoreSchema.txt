@@ -17,9 +17,10 @@ groupUsers
   - joinedAt
 
 groupTasks(taskId)
-  - groupId
-  - title
-  .....
+  taskGroupID
+  taskName
+  taskContent
+  taskLimit
 
 groupTaskLogs
   - taskId

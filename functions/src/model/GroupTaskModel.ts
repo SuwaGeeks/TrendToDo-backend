@@ -5,6 +5,6 @@ export interface GroupTask {
   taskContent: string
   taskLimit: string
   taskWeight: string
-  meanTime: string
-  finishedAt: string
+  meanTime: number
+  finishedAt: number
 }
