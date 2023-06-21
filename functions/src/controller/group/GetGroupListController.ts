@@ -3,7 +3,7 @@ import * as admin from "firebase-admin";
 
 import { GroupModel } from "../../model/GroupModel";
 
-export const SubmitUserTaskController = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const GetGroupListController = async (req: functions.https.Request, res: functions.Response<any>) => {
   // 全てのグループを取得
   const groups = await admin.firestore().collection('groups').get();
 
