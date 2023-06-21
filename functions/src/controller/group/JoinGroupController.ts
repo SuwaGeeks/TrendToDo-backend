@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { FieldValue } from "firebase-admin/firestore";
 
 export const JoinGroupController = async (req: functions.https.Request, res: functions.Response<any>) => {
   var statusMsg = "";
@@ -18,7 +19,7 @@ export const JoinGroupController = async (req: functions.https.Request, res: fun
   }
 
   // グループの確認
-  var targetGroup;
+  var targetGroup: any;
   if(req.body.groupId) {
     await admin.firestore().collection('groups').doc(req.body.groupId).get()
       .then(result => {
@@ -34,7 +35,7 @@ export const JoinGroupController = async (req: functions.https.Request, res: fun
     await admin.firestore().collection('groupUsers').add({
       userId: req.body.userId,
       groupId: req.body.groupId,
-      joinedAt: admin.firestore.FieldValue.serverTimestamp(),
+      joinedAt: FieldValue.serverTimestamp(),
     }).catch(err => {
       statusMsg = "グループに参加できませんでした。";
     })
