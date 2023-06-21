@@ -9,9 +9,9 @@ export const DeleteUserTaskController = async (req: functions.https.Request, res
   if(req.body.taskId) {
     await admin.firestore().collection('userTasks').doc(req.body.taskId).get()
       .then((result) => {
-        if(result.exists) errorFlag = 404
+        if(!result.exists) errorFlag = 404
         else {
-          if(result.get('ownerUserId') != req.body.userId) errorFlag = 401;
+          if(result.get('hostUserId') != req.body.userId) errorFlag = 401;
         }
       }).catch(err => {
         errorFlag = 404;
