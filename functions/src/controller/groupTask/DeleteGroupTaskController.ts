@@ -5,22 +5,22 @@ export const DeleteGroupTaskController = async (
   req: functions.https.Request,
   res: functions.Response<any>
 ) => {
-  //エラーのチェック
-  var errorFlag = 200;
+  // エラーのチェック
+  var errorMessage = "";
 
   // タスクIDとグループIDとの整合性を確認する
   if(req.body.taskId) {
     await admin.firestore().collection('groupTasks').doc(req.body.taskId).get()
       .then((result) => {
-        if(!result.exists) errorFlag = 404
+        if(!result.exists) errorMessage = "指定したIDのタスクがありません"
         else {
-          if(result.get('taskGroupID') != req.body.groupId) errorFlag = 401;
+          if(result.get('taskGroupID') != req.body.groupId) errorMessage = "タスクがグループにありません";
         }
       }).catch(err => {
-        errorFlag = 404;
+        errorMessage = "不明なエラーです";
       })
   } else {
-    errorFlag = 404;
+    errorMessage = "不明なエラーです";
   }
 
   // ユーザIDとグループIDとの整合性を確認する
@@ -35,17 +35,17 @@ export const DeleteGroupTaskController = async (
         result.forEach(elm => {
           if(elm.get('groupId') == req.body.groupId) flag = true;
         })
-        if(!flag) errorFlag = 401;
-        if(result.empty) errorFlag = 404;
+        if(!flag) errorMessage = "ユーザがグループに居ません";
+        if(result.empty) errorMessage = "ユーザが見つかりません";
       })
       .catch((err) => {
-        errorFlag = 401;
+        errorMessage = "不明なエラーです";
       });
   } else {
-    errorFlag = 401;
+    errorMessage = "不明なエラーです";
   }
 
-  if (errorFlag == 200) {
+  if (errorMessage == "") {
     // 削除するドキュメントの参照を取得
     const groupTaskDoc = admin.firestore().collection("groupTasks").doc(req.body.taskId);
 
@@ -54,13 +54,6 @@ export const DeleteGroupTaskController = async (
 
     res.status(200).send("タスクを削除しました");
   } else {
-    switch (errorFlag) {
-      case 401:
-        res.status(401).send("ユーザIDが一致しません");
-        break;
-      case 404:
-        res.status(404).send("指定したタスクIDのタスクが存在しません");
-        break;
-    }
+    res.status(400).send(errorMessage);
   }
 };

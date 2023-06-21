@@ -7,10 +7,10 @@ export const AddGroupTaskController = async (
 ) => {
   
   // エラーのチェック
-  var errorFlag = 200;
+  var errorMessage = "";
 
   // タスク名が入力されていない
-  if (typeof req.body.taskName != "string") errorFlag = 400;
+  if (typeof req.body.taskName != "string") errorMessage = "タスク名が入力されていません";
 
   // ユーザがグループにいない/一致しない
   if (req.body.addUserId) {
@@ -24,20 +24,20 @@ export const AddGroupTaskController = async (
         result.forEach(elm => {
           if(elm.get('groupId') == req.body.groupId) flag = true;
         })
-        if(!flag) errorFlag = 401;
-        if(result.empty) errorFlag = 404;
+        if(!flag) errorMessage = "ユーザがグループに属していません";
+        if(result.empty) errorMessage = "ユーザが見つかりません";
       })
       .catch((err) => {
-        errorFlag = 401;
+        errorMessage = "不明なエラーです";
       });
   } else {
-    errorFlag = 401;
+    errorMessage = "ユーザーIDが指定されていません";
   }
 
-  if (errorFlag == 200) {
+  if (errorMessage == "") {
     // タスクデータのオブジェクトを作成
     const taskData: { [prop: string]: any } = {
-      taskGroupID: req.body.taskGroupID,
+      taskGroupID: req.body.groupId,
       taskName: req.body.taskName,
       taskContent: req.body.taskContent || null,
       taskLimit: req.body.taskLimit || null,
@@ -47,6 +47,7 @@ export const AddGroupTaskController = async (
     const groupTaskCollection = admin.firestore().collection("groupTasks");
 
     // タスクの情報を追加
+    console.log(taskData);
     const addResult = await groupTaskCollection.add(taskData);
 
     // タスクIDを追加
@@ -57,18 +58,8 @@ export const AddGroupTaskController = async (
     taskData.meanTime = 0;
     taskData.finished = false;
 
-    res.json(taskData);
+    res.json({task: taskData});
   } else {
-    switch (errorFlag) {
-      case 400:
-        res.status(400).send("タスク名が入力されていません");
-        break;
-      case 401:
-        res.status(401).send("ユーザがグループにいません/一致しません");
-        break;
-      case 404:
-        res.status(404).send("指定したユーザが見つかりません");
-        break;
-    }
+    res.status(400).send(errorMessage);
   }
 };

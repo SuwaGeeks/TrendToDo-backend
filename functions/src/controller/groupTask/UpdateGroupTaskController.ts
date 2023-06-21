@@ -6,21 +6,21 @@ export const UpdateGroupTaskController = async (
   res: functions.Response<any>
 ) => {
   // エラーのチェック
-  var errorFlag = 202;
+  var errorMessage = "";
 
   // タスクIDとグループIDとの整合性を確認する
   if(req.body.taskId) {
     await admin.firestore().collection('groupTasks').doc(req.body.taskId).get()
       .then((result) => {
-        if(!result.exists) errorFlag = 404
+        if(!result.exists) errorMessage = "指定したIDのタスクがありません"
         else {
-          if(result.get('taskGroupID') != req.body.groupId) errorFlag = 401;
+          if(result.get('taskGroupID') != req.body.groupId) errorMessage = "タスクがグループにありません";
         }
       }).catch(err => {
-        errorFlag = 404;
+        errorMessage = "不明なエラーです";
       })
   } else {
-    errorFlag = 404;
+    errorMessage = "不明なエラーです";
   }
 
   // ユーザIDとグループIDとの整合性を確認する
@@ -35,24 +35,24 @@ export const UpdateGroupTaskController = async (
         result.forEach(elm => {
           if(elm.get('groupId') == req.body.groupId) flag = true;
         })
-        if(!flag) errorFlag = 401;
-        if(result.empty) errorFlag = 404;
+        if(!flag) errorMessage = "ユーザがグループに居ません";
+        if(result.empty) errorMessage = "ユーザが見つかりません";
       })
       .catch((err) => {
-        errorFlag = 401;
+        errorMessage = "不明なエラーです";
       });
   } else {
-    errorFlag = 401;
+    errorMessage = "不明なエラーです";
   }
 
 
-  if (errorFlag == 202) {
+  if (errorMessage == "") {
     //更新内容のオブジェクトを作成
     const updateData: { [prop: string]: any } = {};
 
-    if (req.body.name) updateData.name = req.body.name;
-    if (req.body.description) updateData.description = req.body.description;
-    if (req.body.deadline) updateData.deadline = req.body.deadline;
+    if (req.body.taskName) updateData.taskName = req.body.taskName;
+    if (req.body.taskContent) updateData.taskContent = req.body.taskContent;
+    if (req.body.taskLimit) updateData.taskLimit = req.body.taskLimit;
 
     //コレクションの参照を取得
     const groupTaskDoc = admin
@@ -63,18 +63,40 @@ export const UpdateGroupTaskController = async (
     //タスクの情報を更新
     await groupTaskDoc.update(updateData);
 
-    //変更後のタスクを取得
-    const groupTask = (await groupTaskDoc.get()).data();
+    // 対象のグループタスクのログを取得
+    const groupTaskLogs = await admin
+      .firestore()
+      .collection('groupTaskLogs')
+      .where("taskId", "==", req.body.taskId)
+      .get();
+    
+    // グループタスクの評価と実施時間の平均を計算する
+    var timeCount = 0, evaCount = 0;
+    var meanTime = 0, meanEva = 0;
+    groupTaskLogs.forEach(elm => {
+      if(elm.get('eva')) {
+        evaCount++;
+        meanEva += elm.get('eva');
+      }
+      if(elm.get('time')) {
+        timeCount++;
+        meanTime += elm.get('time');
+      }
+    })
+    if(evaCount != 0) meanEva /= evaCount;
+    if(timeCount != 0) meanTime /= timeCount;
 
-    res.json(groupTask);
-  } else {
-    switch (errorFlag) {
-      case 401:
-        res.status(401).send("ユーザIDが一致しません");
-        break;
-      case 404:
-        res.status(404).send("指定したタスクIDのタスクが存在しません");
-        break;
+    // レスポンスを作成
+    var responseData = (await groupTaskDoc.get()).data();
+    if(responseData) {
+      responseData.taskId = req.body.taskId;
+      responseData.taskWeight = meanEva;
+      responseData.meanTime = meanTime;
+      responseData.finished = true;
     }
+
+    res.json({task: responseData});
+  } else {
+    res.status(400).send(errorMessage);
   }
 };
