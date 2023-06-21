@@ -1,4 +1,4 @@
-interface GroupTask {
+export interface GroupTask {
   taskId: string
   taskGroupId: string
   taskName: string

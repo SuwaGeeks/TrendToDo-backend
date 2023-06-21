@@ -1,4 +1,4 @@
-interface UserTask {
+export interface UserTask {
   taskId: string
   hostUserId: string
   taskName: string
