@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { FieldValue } from "firebase-admin/firestore";
 
 export const SubmitUserTaskController = async (req: functions.https.Request, res: functions.Response<any>) => {
   // エラーのチェック
@@ -9,9 +10,9 @@ export const SubmitUserTaskController = async (req: functions.https.Request, res
   if(req.body.taskId) {
     await admin.firestore().collection('userTasks').doc(req.body.taskId).get()
       .then((result) => {
-        if(result.exists) errorFlag = 404
+        if(!result.exists) errorFlag = 404
         else {
-          if(result.get('ownerUserId') != req.body.userId) errorFlag = 401;
+          if(result.get('hostUserId') != req.body.userId) errorFlag = 401;
         }
       }).catch(err => {
         errorFlag = 404;
@@ -26,7 +27,7 @@ export const SubmitUserTaskController = async (req: functions.https.Request, res
 
     // 達成を記録
     await userTaskDoc.update({
-      finishedAt: admin.firestore.FieldValue.serverTimestamp()
+      finishedAt: FieldValue.serverTimestamp()
     });
 
     // 変更後のタスクを取得

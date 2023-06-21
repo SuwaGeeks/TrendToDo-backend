@@ -9,9 +9,10 @@ export const UpdateUserTaskController = async (req: functions.https.Request, res
   if(req.body.taskId) {
     await admin.firestore().collection('userTasks').doc(req.body.taskId).get()
       .then((result) => {
-        if(result.exists) errorFlag = 404
+        if(!result.exists) errorFlag = 404
         else {
-          if(result.get('ownerUserId') != req.body.userId) errorFlag = 401;
+          console.log(result.get('hostUserId'))
+          if(result.get('hostUserId') != req.body.userId) errorFlag = 401;
         }
       }).catch(err => {
         errorFlag = 404;
@@ -25,7 +26,7 @@ export const UpdateUserTaskController = async (req: functions.https.Request, res
     const updateData: {[prop: string]: any} = {};
 
     if(req.body.taskName) updateData.taskName = req.body.taskName;
-    if(req.body.taskContent) updateData.taskContent = req.body.taskName;
+    if(req.body.taskContent) updateData.taskContent = req.body.taskContent;
     if(req.body.taskLimit) updateData.taskLimit = req.body.taskLimit;
 
     // コレクションの参照を取得
