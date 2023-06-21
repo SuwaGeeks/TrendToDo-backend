@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
-import { GroupTask } from "../../model/GroupTaskModel";
 
 export const SubmitGroupTaskController = async (
   req: functions.https.Request,
