@@ -5,6 +5,10 @@ export const DeleteGroupTaskController = async (
   req: functions.https.Request,
   res: functions.Response<any>
 ) => {
+  res.set('Access-Control-Allow-Headers', '*');
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
+  
   // エラーのチェック
   var errorMessage = "";
 
