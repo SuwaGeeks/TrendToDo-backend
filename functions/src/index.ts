@@ -21,6 +21,10 @@ import { SubmitGroupTaskController } from "./controller/groupTask/SubmitGroupTas
 
 // ライフチェック用のエンドポイント
 exports.helloWorld = functions.https.onRequest((req, res) => {
+  res.set('Access-Control-Allow-Headers', '*');
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
+
   res.send("Hello Firebase!");
 });
 

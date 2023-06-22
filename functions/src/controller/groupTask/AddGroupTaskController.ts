@@ -1,10 +1,11 @@
-import * as functions from "firebase-functions"
 import * as admin from "firebase-admin";
+import * as express from 'express';
+import * as cors from 'cors';
 
-export const AddGroupTaskController = async (
-  req: functions.https.Request,
-  res: functions.Response<any>
-) => {
+export const AddGroupTaskController = express();
+AddGroupTaskController.use(cors({origin: true}));
+
+AddGroupTaskController.post('/', async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
@@ -64,4 +65,4 @@ export const AddGroupTaskController = async (
   } else {
     res.status(400).send(errorMessage);
   }
-};
+});

@@ -1,8 +1,12 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
+import * as express from 'express';
+import * as cors from 'cors';
 
-export const SubmitUserTaskController = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const SubmitUserTaskController = express();
+SubmitUserTaskController.use(cors({origin: true}));
+
+SubmitUserTaskController.post('/', async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
@@ -43,4 +47,4 @@ export const SubmitUserTaskController = async (req: functions.https.Request, res
     else if(errorFlag == 404) res.status(404).send('指定したタスクIDのタスクが存在しません');
     else res.status(400).send('不明なエラーです');
   }
-}
+})

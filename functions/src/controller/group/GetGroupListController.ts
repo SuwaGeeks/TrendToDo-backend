@@ -1,9 +1,13 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
 import { GroupModel } from "../../model/GroupModel";
+import * as express from 'express';
+import * as cors from 'cors';
 
-export const GetGroupListController = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const GetGroupListController = express();
+GetGroupListController.use(cors({origin: true}));
+
+GetGroupListController.post('/', async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
@@ -26,4 +30,4 @@ export const GetGroupListController = async (req: functions.https.Request, res: 
   } else {
     res.status(404).send('グループがありません');
   }
-}
+})

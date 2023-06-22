@@ -1,7 +1,11 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import * as express from 'express';
+import * as cors from 'cors';
 
-export const GetAppDataController = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const GetAppDataController = express();
+GetAppDataController.use(cors({origin: true}));
+
+GetAppDataController.post('/', async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
@@ -108,4 +112,4 @@ export const GetAppDataController = async (req: functions.https.Request, res: fu
   } else {
     res.status(404).send(errorMessage)
   }
-}
+})

@@ -1,11 +1,12 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
+import * as express from 'express';
+import * as cors from 'cors';
 
-export const SubmitGroupTaskController = async (
-  req: functions.https.Request,
-  res: functions.Response<any>
-) => {
+export const SubmitGroupTaskController = express();
+SubmitGroupTaskController.use(cors({origin: true}));
+
+SubmitGroupTaskController.post('/', async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
@@ -108,4 +109,4 @@ export const SubmitGroupTaskController = async (
   } else {
     res.status(400).send(errorMessage);
   }
-};
+});

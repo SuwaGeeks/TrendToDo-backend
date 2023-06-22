@@ -1,10 +1,11 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import * as express from 'express';
+import * as cors from 'cors';
 
-export const DeleteGroupTaskController = async (
-  req: functions.https.Request,
-  res: functions.Response<any>
-) => {
+export const DeleteGroupTaskController = express();
+DeleteGroupTaskController.use(cors({origin: true}));
+
+DeleteGroupTaskController.post('/', async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
@@ -60,4 +61,4 @@ export const DeleteGroupTaskController = async (
   } else {
     res.status(400).send(errorMessage);
   }
-};
+});

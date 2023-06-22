@@ -1,7 +1,11 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import * as express from 'express';
+import * as cors from 'cors';
 
-export const DeleteUserTaskController = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const DeleteUserTaskController = express();
+DeleteUserTaskController.use(cors({origin: true}));
+
+DeleteUserTaskController.post('/', async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
@@ -37,4 +41,4 @@ export const DeleteUserTaskController = async (req: functions.https.Request, res
     else if(errorFlag == 404) res.status(404).send('指定したタスクIDのタスクが存在しません');
     else res.status(400).send('不明なエラーです');
   }
-}
+})

@@ -1,8 +1,12 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
+import * as express from 'express';
+import * as cors from 'cors';
 
-export const JoinGroupController = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const JoinGroupController = express();
+JoinGroupController.use(cors({origin: true}));
+
+JoinGroupController.post('/', async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
@@ -48,4 +52,4 @@ export const JoinGroupController = async (req: functions.https.Request, res: fun
 
   if(statusMsg == "") res.json({joinedGroup: targetGroup});
   else res.status(400).send(statusMsg);
-}
+})

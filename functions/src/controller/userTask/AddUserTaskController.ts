@@ -1,7 +1,11 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import * as express from 'express';
+import * as cors from 'cors';
 
-export const AddUserTaskController = async (req: functions.https.Request, res: functions.Response<any>) => {
+export const AddUserTaskController = express();
+AddUserTaskController.use(cors({origin: true}));
+
+AddUserTaskController.post('/', async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
@@ -49,4 +53,4 @@ export const AddUserTaskController = async (req: functions.https.Request, res: f
     else if(errorFlag == 404) res.status(404).send('ユーザが見つかりません');
     else res.status(400).send('不明なエラーです');
   }
-}
+})
