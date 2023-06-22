@@ -4,7 +4,7 @@ info:
   version: '2.0'
   description: ''
 servers:
-  - url: 'http://mochi-yu.com:27555/api'
+  - url: 'https://us-central1-trend-to-do.cloudfunctions.net'
 paths:
   # アプリのデータを取得する
   '/getAppData':
@@ -378,7 +378,7 @@ paths:
                 type: object
                 properties:
                   task:
-                    $ref: '#/components/schemas/UserTask'
+                    $ref: '#/components/schemas/GroupTask'
         '401':
           description: ユーザIDが一致しない
         '404':
@@ -430,6 +430,10 @@ paths:
                   type: string
                 taskId:
                   type: string
+                evaluation:
+                  type: number
+                time:
+                  type: number
       responses:
         '202':
           description: 消化を受け付ける
