@@ -1,0 +1,549 @@
+openapi: 3.0.0
+info:
+  title: TrendToDoAPI
+  version: '2.0'
+  description: ''
+servers:
+  - url: 'http://mochi-yu.com:27555/api'
+paths:
+  # アプリのデータを取得する
+  '/getAppData':
+    post:
+      summary: 'アプリのデータを取得'
+      tags:
+        - System
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+              required:
+                - userId
+      responses:
+        '200':
+          description: '指定したユーザーIDに必要なアプリのデータを取得'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userTasks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserTask'
+                  userGroups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        groupInfo:
+                          $ref: '#/components/schemas/Group'
+                        groupTask:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/GroupTask'
+        '404':
+          description: 指定したユーザIDのユーザが存在しない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      description: 指定したユーザIDのユーザの、個人タスクの一覧を取得する。
+  
+  # 新しい個人を追加
+  '/addUserTask':
+    post:
+      summary: 新しい個人タスクの追加
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskName:
+                  type: string
+                  description: タスクの名前
+                taskContent:
+                  type: string
+                  description: タスクの中身
+                taskLimit:
+                  type: string
+                  description: タスクの期限
+                addUserId:
+                  type: string
+              required:
+                - taskName
+                - addUserId
+      tags:
+        - UserTask
+      responses:
+        '200':
+          description: 新しいタスクを追加
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/UserTask'
+        '400':
+          description: タスク名が入力されていない
+        '401':
+          description: ユーザIDが一致しない
+        '404':
+          description: 指定したユーザが見つからない
+      description: 新しい個人タスクの追加
+
+  # タスクを更新する
+  '/updateUserTask':
+    post:
+      summary: タスクIDで指定したタスクの内容を変更
+      tags:
+        - UserTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskName:
+                  type: string
+                taskContent:
+                  type: string
+                taskLimit:
+                  type: string
+                userId:
+                  type: string
+                taskId:
+                  type: string
+              required:
+                - userId
+                - taskId
+      responses:
+        '202':
+          description: タスクの内容を更新
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/UserTask'
+        '401':
+          description: ユーザIDが一致しない
+        '404':
+          description: 指定したタスクIDのタスクが存在しない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+  # ユーザータスクを削除する
+  '/deleteUserTask':
+    post:
+      summary: タスクIDで指定したタスクを削除
+      description: タスクIDで指定したタスクを削除
+      tags:
+        - UserTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                taskId:
+                  type: string
+      responses:
+        '200':
+          description: タスクを削除
+        '401':
+          description: ユーザIDが一致しない
+        '404':
+          description: 指定したタスクIDのタスクが存在しない
+
+  # 個人タスクを消化する
+  '/submitUserTask':
+    post:
+      summary: 個人タスクを消化する
+      description: 個人タスクを消化する
+      tags:
+        - UserTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                taskId:
+                  type: string
+      responses:
+        '202':
+          description: 消化を受け付ける
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/UserTask'
+        '401':
+          description: ユーザIDが一致しない
+        '404':
+          description: 指定したタスクIDのタスクが存在しない
+
+
+  # グループに参加する/参加しているグループを取得するエンドポイント
+  '/joinGroup':
+    # get:
+    #   summary: "ユーザIDで指定したユーザの所属しているグループを全て取得"
+    #   tags: 
+    #     - Group
+    #   responses:
+    #     '200':
+    #       description: グループの一覧を取得
+    #       content: 
+    #         application/json:
+    #           schema:
+    #             type: object
+    #             properties: 
+    #               groups: 
+    #                 type: array
+    #                 items:
+    #                   $ref: '#/components/schemas/Group'
+    post:
+      summary: "ユーザIDで指定したユーザがリクエストボディのグループIDで指定したグループに所属する"
+      tags:
+        - Group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupId:
+                  type: string
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: "正常にグループに参加"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  joinedGroup:
+                    $ref: '#/components/schemas/Group'
+        '400':
+          description: "参加しているグループが多すぎる"
+
+  # グループを作るエンドポイント
+  '/createGroup':
+    post:
+      summary: 新しいグループを作成する
+      tags:
+        - Group
+      description: 新しいグループを作成する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupName:
+                  type: string
+                  description: グループ名
+              required:
+                - groupName
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  createdGroup:
+                    $ref: '#/components/schemas/Group'
+  
+  # 現在存在しているグループの一覧を取得する
+  '/getGroupList':
+    get:
+      summary: グループ一覧の取得
+      description: 現在存在しているグループの一覧を取得する
+      tags:
+        - Group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+
+  # グループタスクを追加する
+  '/addGroupTask':
+    post:
+      summary: 新しいグループタスクの追加
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupId:
+                  type: string
+                taskName:
+                  type: string
+                  description: タスクの名前
+                taskContent:
+                  type: string
+                  description: タスクの中身
+                taskLimit:
+                  type: string
+                  description: タスクの期限
+                addUserId:
+                  type: string
+              required:
+                - taskName
+                - addUserId
+      tags:
+        - GroupTask
+      responses:
+        '200':
+          description: 新しいタスクを追加
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/GroupTask'
+        '400':
+          description: タスク名が入力されていない
+        '401':
+          description: ユーザがグループに居ないが一致しない
+        '404':
+          description: 指定したユーザが見つからない
+      description: 新しい個人タスクの追加
+
+  # グループタスクをパブリックタスクに設定する
+
+  # グループタスクを変更する
+  '/updateGroupTask':
+    post:
+      summary: タスクIDで指定したタスクの内容を変更
+      tags:
+        - GroupTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskName:
+                  type: string
+                taskContent:
+                  type: string
+                taskLimit:
+                  type: string
+                userId:
+                  type: string
+                groupId:
+                  type: string
+                taskId:
+                  type: string
+              required:
+                - userId
+                - taskId
+      responses:
+        '202':
+          description: タスクの内容を更新
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/UserTask'
+        '401':
+          description: ユーザIDが一致しない
+        '404':
+          description: 指定したタスクIDのタスクが存在しない
+
+  # グループタスクを削除する
+  '/deleteGroupTask':
+    post:
+      summary: タスクIDで指定したタスクを削除
+      description: タスクIDで指定したタスクを削除
+      tags:
+        - GroupTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                groupId:
+                  type: string
+                taskId:
+                  type: string
+      responses:
+        '200':
+          description: タスクを削除
+        '401':
+          description: ユーザIDが一致しない
+        '404':
+          description: 指定したタスクIDのタスクが存在しない
+
+  # グループタスクを消化する
+  '/submitGroupTask':
+    post:
+      summary: グループタスクを消化する
+      description: グループタスクを消化する
+      tags:
+        - GroupTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                groupId:
+                  type: string
+                taskId:
+                  type: string
+      responses:
+        '202':
+          description: 消化を受け付ける
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/GroupTask'
+        '401':
+          description: ユーザIDがグループに参加していないか、グループが存在しない
+        '404':
+          description: 指定したタスクIDのタスクが存在しない
+
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: 一意に定まるユーザのID
+        userName:
+          type: string
+          description: ユーザ名
+      required:
+        - userId
+        - userName
+    Group:
+      title: Group
+      type: object
+      properties:
+        groupId:
+          type: string
+          description: グループのID
+        groupName:
+          type: string
+          description: グループの名称
+      required:
+        - groupId
+        - groupName
+    ErrorMessage:
+      title: ErrorMessage
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: レスポンスのステータスコード
+        message:
+          type: string
+          description: エラーメッセージ
+    UserTask:
+      title: UserTask
+      type: object
+      description: 個人タスク
+      properties:
+        taskId:
+          type: string
+          description: 一意に定まるタスクのID
+        hostUserId:
+          type: string
+          description: タスクを作成したユーザのID
+        taskName:
+          type: string
+          description: タスクの名前
+        taskContent:
+          type: string
+          description: タスクの中身
+        taskLimit:
+          type: string
+          description: タスクの期限
+        finishedAt:
+          type: string
+          description: タスクの終了時刻。nullの場合はまだ終了していないタスク
+      required:
+        - hostUserId
+        - taskName
+    GroupTask:
+      title: GroupTask
+      type: object
+      description: グループタスク
+      properties:
+        taskId:
+          type: string
+          description: 一意に定まるタスクのID
+        taskGroupId:
+          type: string
+          description: タスクが属するグループのID
+        taskName:
+          type: string
+          description: タスクの名前
+        taskContent:
+          type: string
+          description: タスクの中身
+        taskLimit:
+          type: string
+          description: タスクの期限
+        taskWeight:
+          type: number
+          description: タスクの大変さ
+        meanTime:
+          type: integer
+          description: 平均の実施時間（単位：分）
+        finished:
+          type: boolean
+  securitySchemes: {}
+tags:
+  - name: System
+    description: アプリの動作に必要なAPI
+  - name: UserTask
+    description: 個人タスクに関わるAPI
+  - name: Group
+    description: グループに関わるAPI
+  - name: GroupTask
+    description: グループタスクに関わるAPI
