@@ -4,7 +4,12 @@ admin.initializeApp();
 
 import { AddNewUserController } from "./controller/AddNewUserController";
 
+import { SessionLoginController } from "./controller/auth/sessionLoginController";
+import { SessionLogoutController } from "./controller/auth/sessionLogoutController";
+import { CheckLoginController } from "./controller/auth/checkLoginController";
+
 import { GetAppDataController } from "./controller/GetAppDataController";
+
 import { AddUserTaskController } from "./controller/userTask/AddUserTaskController";
 import { UpdateUserTaskController } from "./controller/userTask/UpdateUserTaskController";
 import { DeleteUserTaskController } from "./controller/userTask/DeleteUserTaskController";
@@ -26,6 +31,14 @@ exports.helloWorld = functions.https.onRequest((req, res) => {
 
 // ユーザ作成時に呼ばれるエンドポイント
 exports.addNewUser = functions.auth.user().onCreate( AddNewUserController );
+
+// Cookie周りの処理で使用するエンドポイント群
+// 現在のログイン状況を確認するエンドポイント
+exports.checkLogin = functions.https.onRequest( CheckLoginController );
+// Cookieを設定するエンドポイント
+exports.sessionLogin = functions.https.onRequest( SessionLoginController );
+// Cookieを削除するエンドポイント
+exports.sessionLogout = functions.https.onRequest( SessionLogoutController );
 
 // アプリのデータを取得するエンドポイント
 exports.getAppData = functions.https.onRequest( GetAppDataController );
