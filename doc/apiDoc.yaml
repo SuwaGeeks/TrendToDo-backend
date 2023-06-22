@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: TrendToDoAPI
-  version: '2.0'
+  version: '2.1'
   description: ''
 servers:
   - url: 'https://us-central1-trend-to-do.cloudfunctions.net'
