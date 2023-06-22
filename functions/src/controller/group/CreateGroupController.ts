@@ -3,6 +3,10 @@ import * as admin from "firebase-admin";
 import { GroupModel } from "../../model/GroupModel";
 
 export const CreateGroupController = async (req: functions.https.Request, res: functions.Response<any>) => {
+  res.set('Access-Control-Allow-Headers', '*');
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
+  
   var status = 200;
 
   // リクエスト内容の精査

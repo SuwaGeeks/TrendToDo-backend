@@ -2,6 +2,10 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
 export const GetAppDataController = async (req: functions.https.Request, res: functions.Response<any>) => {
+  res.set('Access-Control-Allow-Headers', '*');
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
+  
   var errorMessage = "";
 
   if(!req.body.userId) {
