@@ -36,6 +36,7 @@ export const JoinGroupController = async (req: functions.https.Request, res: fun
       userId: req.body.userId,
       groupId: req.body.groupId,
       joinedAt: FieldValue.serverTimestamp(),
+      groupName: targetGroup.groupName,
     }).catch(err => {
       statusMsg = "グループに参加できませんでした。";
     })
