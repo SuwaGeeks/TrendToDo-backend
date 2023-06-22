@@ -11,7 +11,6 @@ export const UpdateUserTaskController = async (req: functions.https.Request, res
       .then((result) => {
         if(!result.exists) errorFlag = 404
         else {
-          console.log(result.get('hostUserId'))
           if(result.get('hostUserId') != req.body.userId) errorFlag = 401;
         }
       }).catch(err => {

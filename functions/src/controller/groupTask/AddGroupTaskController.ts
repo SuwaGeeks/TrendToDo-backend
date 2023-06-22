@@ -47,7 +47,6 @@ export const AddGroupTaskController = async (
     const groupTaskCollection = admin.firestore().collection("groupTasks");
 
     // タスクの情報を追加
-    console.log(taskData);
     const addResult = await groupTaskCollection.add(taskData);
 
     // タスクIDを追加
