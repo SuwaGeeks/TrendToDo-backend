@@ -15,6 +15,7 @@ groupUsers
   - userId
   - groupId
   - joinedAt
+  - groupName
 
 groupTasks(taskId)
   taskGroupID
