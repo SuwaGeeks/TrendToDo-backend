@@ -32,7 +32,9 @@ GetAppDataController.post('/', async (req, res) => {
       .then(result => {
         var userTasks: any[] = [];
         result.forEach(elm => {
-          userTasks.push(elm.data());
+          var taskData = elm.data();
+          taskData.taskId = elm.id;
+          userTasks.push(taskData);
         })
         responseData.userTasks = userTasks;
       })
