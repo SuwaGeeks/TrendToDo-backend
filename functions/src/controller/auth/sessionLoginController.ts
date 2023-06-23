@@ -14,6 +14,8 @@ SessionLoginController.post('/', async (req, res) => {
 
   const expiresIn = 60 * 60 * 24 * 5 * 1000;
 
+  res.setHeader('Cache-Control', 'private');
+  
   getAuth()
     .createSessionCookie(idToken, { expiresIn })
     .then(
