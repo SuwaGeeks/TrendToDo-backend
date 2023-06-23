@@ -93,6 +93,7 @@ GetAppDataController.post('/', async (req, res) => {
       groupTasksFromTaskId[taskId].taskWeight = meanEva;
       groupTasksFromTaskId[taskId].meanTime = meanTime;
       groupTasksFromTaskId[taskId].finished = finishedFlag;
+      groupTasksFromTaskId[taskId].taskId = taskId;
       groupTasks[groupTasksFromTaskId[taskId]['taskGroupID']].push(groupTasksFromTaskId[taskId]);
     }
 
