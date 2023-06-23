@@ -37,6 +37,17 @@ JoinGroupController.post('/', async (req, res) => {
         statusMsg = "指定したグループが存在しません。";
       })
   }
+  
+  // 既にグループに参加しているかの確認
+  const groupUserRef = admin.firestore().collection('groupUsers');
+  if(statusMsg == "") {
+    await groupUserRef.where('userId', "==", req.body.userId).get()
+      .then(result => {
+        result.forEach(elm => {
+          if(elm.get('groupId') == req.body.groupId) statusMsg = "既に参加しているグループです";
+        })
+      })
+  }
 
   // グループに参加する
   if(statusMsg == "") {
